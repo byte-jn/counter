@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Counter</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            bg: '#0a0a0a',
+                            card: '#161616',
+                            inner: '#1a1a1a',
+                            border: '#2a2a2a',
+                            hover: '#222222',
+                            text: '#f0f0f0',
+                            muted: '#9ca3af'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            font-family: 'Inter', system-ui, sans-serif;
+            touch-action: manipulation;
+        }
+
+        /* Number pop animation */
+        .number-pop {
+            animation: pop 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Visual active state for tap card */
+        .tap-active {
+            background-color: #121212 !important;
+            transform: scale(0.995);
+        }
+
+        /* Hide standard spin buttons on number inputs */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* Custom Dark Select Box Styling */
+        select.custom-dark-select {
+            background-color: #1a1a1a !important;
+            color: #f0f0f0 !important;
+            border-color: #333333 !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%9ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em 1.25em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        select.custom-dark-select option {
+            background-color: #161616 !important;
+            color: #f0f0f0 !important;
+            padding: 10px;
+        }
+
+        *:focus-visible {
+            outline: 2px solid #525252;
+            outline-offset: 2px;
+        }
+
+        /* Custom Scrollbar for Modal */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #161616;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444444;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-between items-center p-4 sm:p-6 select-none overflow-hidden relative">
+
+    <!-- Top Right 'i' Info/Config Button -->
+    <header class="w-full max-w-lg flex justify-end items-center pt-2 px-2 z-10">
+        <button 
+            id="openConfigBtn" 
+            class="w-10 h-10 rounded-full flex items-center justify-center text-dark-muted hover:text-white bg-dark-card hover:bg-dark-hover border border-dark-border transition-all duration-200 shadow-sm"
+            title="Counter Settings (i)"
+            aria-label="Counter Settings"
+        >
+            <i class="fa-solid fa-info text-sm"></i>
+        </button>
+    </header>
+
+    <!-- Main Tap / Increment Screen Area -->
+    <main 
+        id="tapArea"
+        class="w-full max-w-lg flex-1 my-4 bg-dark-bg hover:bg-dark-card/40 border border-dark-border rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-150 shadow-2xl relative overflow-hidden group"
+        role="button"
+        tabindex="0"
+        aria-label="Tap to increment counter"
+    >
+        <!-- Counter Title -->
+        <h1 id="displayTitle" class="text-xl sm:text-2xl font-medium text-dark-muted mb-6 tracking-wide text-center px-4 transition-colors group-hover:text-neutral-300 truncate max-w-full">
+            Counter
+        </h1>
+
+        <!-- Counter Large Display -->
+        <div class="my-auto flex flex-col items-center justify-center pointer-events-none">
+            <span id="counterValue" class="text-8xl sm:text-9xl font-bold tracking-tight text-white font-mono transition-transform">
+                0
+            </span>
+            <div class="mt-8 text-dark-muted text-3xl font-light opacity-30 group-hover:opacity-75 transition-opacity">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+        </div>
+
+        <div class="text-[11px] text-dark-muted/60 tracking-widest uppercase mt-auto font-medium">
+            Tap anywhere to count
+        </div>
+    </main>
+
+    <!-- Bottom Guidance -->
+    <footer class="text-xs text-dark-muted py-2 text-center">
+        Press <kbd class="px-1.5 py-0.5 bg-dark-card border border-dark-border rounded text-neutral-300 font-mono text-[10px]">Space</kbd> or <kbd class="px-1.5 py-0.5 bg-dark-card border border-dark-border rounded text-neutral-300 font-mono text-[10px]">Enter</kbd> to count
+    </footer>
+
+    <!-- Quick Config / Multi-Counter Drawer Modal -->
+    <div id="configModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-200">
+        <div class="bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 max-h-[90vh] overflow-y-auto">
+            
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center pb-3 border-b border-dark-border">
+                <h2 class="text-xs font-bold text-neutral-300 tracking-wider uppercase">Counter Settings</h2>
+                <button id="closeConfigBtn" class="text-dark-muted hover:text-white p-1.5 rounded-lg hover:bg-dark-hover transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- SECTION 1: Counter Selector -->
+            <div class="flex flex-col gap-2">
+                <label for="counterSelect" class="block text-xs uppercase font-semibold text-dark-muted tracking-wider">Switch Counter</label>
+                <div class="flex gap-2">
+                    <select 
+                        id="counterSelect" 
+                        class="custom-dark-select flex-1 bg-dark-inner border border-dark-border text-dark-text rounded-xl px-3.5 py-2.5 focus:border-neutral-400 focus:outline-none text-sm font-medium transition-colors cursor-pointer"
+                    >
+                    </select>
+                    <button 
+                        id="newCounterBtn" 
+                        type="button" 
+                        class="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-100 border border-dark-border rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-sm"
+                        title="Create New Counter"
+                    >
+                        <i class="fa-solid fa-plus text-xs"></i> New
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Inline New Counter Form -->
+            <div id="newCounterForm" class="hidden flex-col gap-3 p-4 bg-dark-inner border border-dark-border rounded-2xl">
+                <div class="text-xs uppercase font-bold text-neutral-300 tracking-wider">Create New Counter</div>
+                <input 
+                    type="text" 
+                    id="newCounterNameInput" 
+                    placeholder="Enter counter name..."
+                    class="w-full bg-dark-card border border-dark-border text-dark-text rounded-xl px-3.5 py-2 text-sm focus:border-neutral-400 focus:outline-none placeholder:text-neutral-500"
+                />
+                <div class="flex justify-end gap-2 pt-1">
+                    <button 
+                        id="cancelNewCounterBtn" 
+                        type="button" 
+                        class="px-3 py-1.5 text-xs text-dark-muted hover:text-white transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        id="confirmNewCounterBtn" 
+                        type="button" 
+                        class="px-3.5 py-1.5 bg-white text-black rounded-lg text-xs font-bold hover:bg-neutral-200 transition-colors shadow-sm"
+                    >
+                        Add Counter
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECTION 3: Current Counter Settings -->
+            <div class="flex flex-col gap-4 border-t border-dark-border pt-4">
+                <div class="text-xs uppercase font-bold text-neutral-400 tracking-wider">Active Counter Config</div>
+                
+                <!-- Rename Input -->
+                <div>
+                    <label for="configTitleInput" class="block text-xs uppercase font-semibold text-dark-muted mb-1.5">Counter Name</label>
+                    <input 
+                        type="text" 
+                        id="configTitleInput" 
+                        placeholder="Counter Name..."
+                        class="w-full bg-dark-inner border border-dark-border text-dark-text rounded-xl px-3.5 py-2.5 focus:border-neutral-400 focus:outline-none text-sm transition-colors placeholder:text-neutral-500"
+                    />
+                </div>
+
+                <!-- Set Value Input -->
+                <div>
+                    <label for="configValueInput" class="block text-xs uppercase font-semibold text-dark-muted mb-1.5">Counter Value</label>
+                    <input 
+                        type="number" 
+                        id="configValueInput" 
+                        placeholder="0"
+                        class="w-full bg-dark-inner border border-dark-border text-dark-text rounded-xl px-3.5 py-2.5 focus:border-neutral-400 focus:outline-none text-sm font-mono transition-colors"
+                    />
+                </div>
+            </div>
+
+            <!-- SECTION 4: Action Controls -->
+            <div class="flex flex-col gap-2.5 pt-3 border-t border-dark-border">
+                <div class="grid grid-cols-2 gap-2.5">
+                    <!-- Reset Button -->
+                    <button 
+                        id="resetBtn" 
+                        type="button" 
+                        class="py-2.5 px-3 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/20 rounded-xl text-xs uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-1.5"
+                    >
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Reset
+                    </button>
+
+                    <!-- Delete Button -->
+                    <button 
+                        id="deleteBtn" 
+                        type="button" 
+                        class="py-2.5 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl text-xs uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-1.5 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:bg-red-500/10"
+                    >
+                        <i class="fa-solid fa-trash-can"></i>
+                        Delete
+                    </button>
+                </div>
+
+                <!-- Done / Save Button -->
+                <button 
+                    id="saveConfigBtn" 
+                    type="button" 
+                    class="w-full mt-2 py-3 px-4 bg-white hover:bg-neutral-200 text-black rounded-xl text-xs uppercase font-bold tracking-wider transition-colors shadow-lg"
+                >
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // DOM Elements
+        const tapArea = document.getElementById('tapArea');
+        const displayTitle = document.getElementById('displayTitle');
+        const counterValue = document.getElementById('counterValue');
+        const openConfigBtn = document.getElementById('openConfigBtn');
+        const closeConfigBtn = document.getElementById('closeConfigBtn');
+        const configModal = document.getElementById('configModal');
+        
+        const counterSelect = document.getElementById('counterSelect');
+        const newCounterBtn = document.getElementById('newCounterBtn');
+        const newCounterForm = document.getElementById('newCounterForm');
+        const newCounterNameInput = document.getElementById('newCounterNameInput');
+        const cancelNewCounterBtn = document.getElementById('cancelNewCounterBtn');
+        const confirmNewCounterBtn = document.getElementById('confirmNewCounterBtn');
+
+        const configTitleInput = document.getElementById('configTitleInput');
+        const configValueInput = document.getElementById('configValueInput');
+        const resetBtn = document.getElementById('resetBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const saveConfigBtn = document.getElementById('saveConfigBtn');
+
+        // State Management
+        // Schema: { "counter_id": { id: "...", name: "...", count: 0 } }
+        let counters = {};
+        let activeCounterId = "";
+        let isModalOpen = false;
+
+        // Cookie Helpers
+        function setCookie(name, value, days = 365) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "; expires=" + date.toUTCString();
+            document.cookie = name + "=" + encodeURIComponent(value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) {
+                    return decodeURIComponent(c.substring(nameEQ.length, c.length));
+                }
+            }
+            return null;
+        }
+
+        // Generate unique ID for counters
+        function generateId() {
+            return 'c_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+        }
+
+        // Initialize and Load multi-counter profile from cookies
+        function initCounters() {
+            const savedCountersRaw = getCookie('minimal_counters');
+            const savedActiveId = getCookie('active_counter_id');
+
+            if (savedCountersRaw) {
+                try {
+                    const parsed = JSON.parse(savedCountersRaw);
+                    // Standardize object structure (handling legacy 'value' vs 'count')
+                    Object.keys(parsed).forEach(k => {
+                        const item = parsed[k];
+                        counters[k] = {
+                            id: item.id || k,
+                            name: item.name || "Counter",
+                            count: typeof item.count === 'number' ? item.count : (typeof item.value === 'number' ? item.value : 0)
+                        };
+                    });
+                } catch (e) {
+                    counters = {};
+                }
+            }
+
+            // Create default counter if none exists
+            if (Object.keys(counters).length === 0) {
+                const defaultId = generateId();
+                counters[defaultId] = {
+                    id: defaultId,
+                    name: "Main Counter",
+                    count: 0
+                };
+                activeCounterId = defaultId;
+            } else if (savedActiveId && counters[savedActiveId]) {
+                activeCounterId = savedActiveId;
+            } else {
+                activeCounterId = Object.keys(counters)[0];
+            }
+
+            saveAllState();
+            updateMainUI(false);
+        }
+
+        // Save state structure to cookies
+        function saveAllState() {
+            setCookie('minimal_counters', JSON.stringify(counters));
+            setCookie('active_counter_id', activeCounterId);
+        }
+
+        // Get Active Counter Object
+        function getActiveCounter() {
+            return counters[activeCounterId] || { name: "Counter", count: 0 };
+        }
+
+        // Refresh Main Single-Tap View UI
+        function updateMainUI(animate = true) {
+            const current = getActiveCounter();
+            displayTitle.textContent = current.name || "Counter";
+            counterValue.textContent = (current.count || 0).toLocaleString();
+
+            if (animate) {
+                counterValue.classList.remove('number-pop');
+                void counterValue.offsetWidth; // Force CSS reflow
+                counterValue.classList.add('number-pop');
+            }
+
+            saveAllState();
+        }
+
+        // Single Tap Increment Logic
+        function increment() {
+            if (isModalOpen) return;
+            if (!counters[activeCounterId]) return;
+
+            counters[activeCounterId].count++;
+            
+            // Visual feedback
+            tapArea.classList.add('tap-active');
+            setTimeout(() => tapArea.classList.remove('tap-active'), 100);
+
+            updateMainUI(true);
+        }
+
+        // Populate Config Modal Controls & Options
+        function populateModalFields() {
+            const counterKeys = Object.keys(counters);
+
+            // Populate Dropdown
+            counterSelect.innerHTML = '';
+            counterKeys.forEach(key => {
+                const item = counters[key];
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.name} (${item.count})`;
+                if (item.id === activeCounterId) {
+                    option.selected = true;
+                }
+                counterSelect.appendChild(option);
+            });
+
+            // Populate Active Form Fields
+            const current = getActiveCounter();
+            configTitleInput.value = current.name;
+            configValueInput.value = current.count;
+
+            // Safety check: Cannot delete if only 1 counter exists
+            deleteBtn.disabled = counterKeys.length <= 1;
+        }
+
+        // Open Config Modal
+        function openModal() {
+            isModalOpen = true;
+            newCounterForm.classList.add('hidden');
+            populateModalFields();
+
+            configModal.classList.remove('opacity-0', 'pointer-events-none');
+            configModal.classList.add('opacity-100');
+        }
+
+        // Apply changes from form and Close Modal
+        function closeModal() {
+            syncFormToActiveCounter();
+
+            isModalOpen = false;
+            configModal.classList.remove('opacity-100');
+            configModal.classList.add('opacity-0', 'pointer-events-none');
+
+            updateMainUI(false);
+        }
+
+        // Sync inputs to active counter object
+        function syncFormToActiveCounter() {
+            if (!counters[activeCounterId]) return;
+
+            const newTitle = configTitleInput.value.trim();
+            const newCount = parseInt(configValueInput.value, 10);
+
+            counters[activeCounterId].name = newTitle.length > 0 ? newTitle : "Counter";
+            counters[activeCounterId].count = isNaN(newCount) ? counters[activeCounterId].count : newCount;
+
+            saveAllState();
+        }
+
+        // Switch active counter profile
+        function switchCounter(newId) {
+            if (counters[newId]) {
+                syncFormToActiveCounter(); // Save edits to current counter before switching
+                activeCounterId = newId;
+                populateModalFields();
+                updateMainUI(false);
+            }
+        }
+
+        // Reset current counter to 0
+        function resetCurrentCounter() {
+            if (counters[activeCounterId]) {
+                counters[activeCounterId].count = 0;
+                configValueInput.value = 0;
+                populateModalFields();
+                updateMainUI(true);
+            }
+        }
+
+        // Delete current counter
+        function deleteCurrentCounter() {
+            const keys = Object.keys(counters);
+            if (keys.length <= 1) return;
+
+            delete counters[activeCounterId];
+            activeCounterId = Object.keys(counters)[0]; // Fallback to remaining counter
+
+            populateModalFields();
+            updateMainUI(true);
+        }
+
+        // Add new counter
+        function addNewCounter() {
+            const name = newCounterNameInput.value.trim() || "New Counter";
+            const newId = generateId();
+
+            counters[newId] = {
+                id: newId,
+                name: name,
+                count: 0
+            };
+
+            activeCounterId = newId;
+            newCounterNameInput.value = '';
+            newCounterForm.classList.add('hidden');
+
+            populateModalFields();
+            updateMainUI(false);
+        }
+
+        // Event Listeners
+        tapArea.addEventListener('click', increment);
+
+        openConfigBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openModal();
+        });
+
+        closeConfigBtn.addEventListener('click', closeModal);
+        saveConfigBtn.addEventListener('click', closeModal);
+
+        counterSelect.addEventListener('change', (e) => {
+            switchCounter(e.target.value);
+        });
+
+        // Toggle New Counter Form
+        newCounterBtn.addEventListener('click', () => {
+            newCounterForm.classList.remove('hidden');
+            newCounterNameInput.focus();
+        });
+
+        cancelNewCounterBtn.addEventListener('click', () => {
+            newCounterForm.classList.add('hidden');
+        });
+
+        confirmNewCounterBtn.addEventListener('click', addNewCounter);
+
+        newCounterNameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addNewCounter();
+            }
+        });
+
+        resetBtn.addEventListener('click', resetCurrentCounter);
+        deleteBtn.addEventListener('click', deleteCurrentCounter);
+
+        // Auto-save active title/count edits on typing
+        configTitleInput.addEventListener('input', () => {
+            if (counters[activeCounterId]) {
+                counters[activeCounterId].name = configTitleInput.value.trim() || "Counter";
+                saveAllState();
+            }
+        });
+
+        configValueInput.addEventListener('input', () => {
+            if (counters[activeCounterId]) {
+                const val = parseInt(configValueInput.value, 10);
+                counters[activeCounterId].count = isNaN(val) ? 0 : val;
+                saveAllState();
+            }
+        });
+
+        // Close modal when clicking backdrop
+        configModal.addEventListener('click', (e) => {
+            if (e.target === configModal) closeModal();
+        });
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Toggle config modal with 'i'
+            if ((e.key === 'i' || e.key === 'I') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+                if (e.repeat) return;
+                e.preventDefault();
+                if (isModalOpen) {
+                    closeModal();
+                } else {
+                    openModal();
+                }
+                return;
+            }
+
+            // Escape closes modal
+            if (e.key === 'Escape' && isModalOpen) {
+                closeModal();
+                return;
+            }
+
+            // Space / Enter increments active count when modal is closed
+            if (!isModalOpen && (e.key === ' ' || e.key === 'Enter')) {
+                e.preventDefault();
+                if (e.repeat) return;
+                increment();
+            }
+        });
+
+        // Initialize state on page load
+        window.addEventListener('DOMContentLoaded', initCounters);
+    </script>
+</body>
+</html>
