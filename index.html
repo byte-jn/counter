@@ -1,426 +1,552 @@
 <!DOCTYPE html>
-<html lang="de" class="h-full select-none antialiased">
+<html lang="de" class="h-full bg-[#050505] text-neutral-200 select-none antialiased">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Counter Hub</title>
-    <!-- Tailwind CSS -->
+    <title>count everything</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
-
     <style>
-        :root {
-            --accent-color: #3b82f6;
-            --accent-rgb: 59, 130, 246;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-pixel { font-family: 'Press Start 2P', monospace; }
+        .font-mono-num { font-family: 'JetBrains Mono', monospace; }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: background-color 0.25s ease, color 0.25s ease;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .font-pixel {
-            font-family: 'Press Start 2P', monospace;
-        }
-
-        .font-mono-num {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Pixel Art Styling Crisp Rendering */
-        .pixel-art {
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
-        }
-
-        /* Dynamic Custom Select Box */
-        .custom-select {
-            appearance: none;
-            -webkit-appearance: none;
-            background-size: 1.25em 1.25em;
-            background-position: right 0.75rem center;
-            background-repeat: no-repeat;
-            padding-right: 2.5rem;
-        }
-
-        .dark .custom-select {
-            background-color: #121212;
-            color: #f5f5f5;
-            border-color: rgba(255, 255, 255, 0.1);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23888888' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-        }
-
-        .light .custom-select {
-            background-color: #ffffff;
-            color: #111111;
-            border-color: rgba(0, 0, 0, 0.12);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23555555' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-        }
-
-        /* Spring Animation for Tap Count */
         @keyframes springPop {
             0% { transform: scale(1); }
             40% { transform: scale(1.06); }
             100% { transform: scale(1); }
         }
-        .animate-pop {
-            animation: springPop 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+        .animate-spring { animation: springPop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.2); }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 0.6s ease-out forwards;
         }
 
-        /* Hide scrollbars */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -60px) scale(1.4); }
+        }
 
-        /* Custom Accent Glow */
-        .accent-glow {
-            box-shadow: 0 0 35px -5px rgba(var(--accent-rgb), 0.35);
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.15s, border-color 0.15s;
         }
-        .accent-border {
-            border-color: var(--accent-color) !important;
-        }
-        .accent-bg {
-            background-color: var(--accent-color) !important;
-        }
-        .accent-text {
-            color: var(--accent-color) !important;
-        }
+        .color-dot:hover { transform: scale(1.15); }
+        .color-dot.selected { border-color: #ffffff; transform: scale(1.2); }
     </style>
 </head>
-<body class="h-full w-full bg-[#080808] text-neutral-100 dark overflow-x-hidden">
+<body id="appBody" class="h-full w-full flex flex-col p-4 sm:p-8 md:p-12 overflow-hidden bg-[#050505] transition-colors duration-300">
 
-    <!-- MAIN APP WRAPPER -->
-    <div id="appRoot" class="min-h-full w-full flex flex-col relative">
-
-        <!-- ==================================================== -->
-        <!-- VIEW 1: OVERVIEW MAIN MENU / HUB (DEFAULT START) -->
-        <!-- ==================================================== -->
-        <main id="hubView" class="flex-1 w-full max-w-6xl mx-auto p-5 sm:p-8 flex flex-col gap-8">
-            
-            <!-- TOP BAR / HUB HEADER -->
-            <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10 dark:border-white/10 light:border-black/10">
-                <div class="flex items-center gap-3">
-                    <!-- PIXEL ART STAR LOGO -->
-                    <svg class="w-8 h-8 pixel-art text-amber-400 fill-current" viewBox="0 0 16 16">
-                        <path d="M7 0h2v2H7zM7 2h2v2H7zM5 4h6v2H5zM1 6h14v2H1zM3 8h10v2H3zM5 10h6v2H5zM3 12h2v4H3zM11 12h2v4h-2z"/>
-                    </svg>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-wider font-pixel text-white dark:text-white light:text-black">
-                            PIXEL<span class="accent-text">.COUNT</span>
-                        </h1>
-                        <p class="text-xs text-neutral-400 dark:text-neutral-400 light:text-neutral-600 mt-0.5">
-                            Übersicht aller Zähler
-                        </p>
-                    </div>
-                </div>
-
-                <!-- CONTROLS & SETTINGS (DARK/LIGHT + ACCENT PALETTE) -->
-                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                    
-                    <!-- DYNAMIC COLOR PALETTE PICKER -->
-                    <div class="flex items-center gap-1.5 p-1.5 rounded-xl bg-neutral-900/80 dark:bg-neutral-900/80 light:bg-neutral-200/80 border border-white/10 dark:border-white/10 light:border-black/10">
-                        <span class="text-[10px] font-pixel px-1 text-neutral-400 dark:text-neutral-400 light:text-neutral-600">COLOR</span>
-                        <button onclick="setAccentColor('#3b82f6', '59, 130, 246')" class="w-5 h-5 rounded-md bg-blue-500 hover:scale-110 transition-transform cursor-pointer" title="Blau"></button>
-                        <button onclick="setAccentColor('#10b981', '16, 185, 129')" class="w-5 h-5 rounded-md bg-emerald-500 hover:scale-110 transition-transform cursor-pointer" title="Smaragd"></button>
-                        <button onclick="setAccentColor('#ec4899', '236, 72, 153')" class="w-5 h-5 rounded-md bg-pink-500 hover:scale-110 transition-transform cursor-pointer" title="Rosa"></button>
-                        <button onclick="setAccentColor('#f59e0b', '245, 158, 11')" class="w-5 h-5 rounded-md bg-amber-500 hover:scale-110 transition-transform cursor-pointer" title="Amber"></button>
-                        <button onclick="setAccentColor('#8b5cf6', '139, 92, 246')" class="w-5 h-5 rounded-md bg-purple-500 hover:scale-110 transition-transform cursor-pointer" title="Lila"></button>
-                    </div>
-
-                    <!-- DARK / LIGHT MODE TOGGLE -->
-                    <button onclick="toggleThemeMode()" class="p-2.5 rounded-xl bg-neutral-900 dark:bg-neutral-900 light:bg-neutral-200 text-neutral-200 dark:text-neutral-200 light:text-neutral-800 border border-white/10 dark:border-white/10 light:border-black/10 hover:scale-105 transition-all cursor-pointer flex items-center justify-center" title="Dark/Light Mode Wechseln">
-                        <i id="themeIcon" data-lucide="moon" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </header>
-
-            <!-- ACTION BANNER: NEW COUNTER -->
-            <div class="flex items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900/50 dark:bg-neutral-900/50 light:bg-neutral-100 border border-white/5 dark:border-white/5 light:border-black/5">
-                <div class="flex items-center gap-3">
-                    <!-- PIXEL ART HEART SVG -->
-                    <svg class="w-6 h-6 pixel-art text-rose-500 fill-current" viewBox="0 0 16 16">
-                        <path d="M2 3h4v2H2zM10 3h4v2h-4zM0 5h8v2H0zM8 5h8v2H8zM0 7h16v2H0zM2 9h12v2H2zM4 11h8v2H4zM6 13h4v2H6z"/>
-                    </svg>
-                    <span class="text-xs font-semibold tracking-wider uppercase text-neutral-300 dark:text-neutral-300 light:text-neutral-700">
-                        Zähler verwalten
-                    </span>
-                </div>
-
-                <button onclick="openNewCounterPrompt()" class="flex items-center gap-2 px-4 py-2 rounded-xl accent-bg text-white font-semibold text-xs hover:opacity-90 transition-all cursor-pointer shadow-lg shadow-blue-500/10">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                    Neuer Zähler
-                </button>
+    <!-- MAIN CONTAINER BOX -->
+    <div id="mainBox" class="relative w-full h-full bg-[#0e0e0e] border border-white/[0.08] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden transition-all duration-300">
+        
+        <!-- HUB HEADER BAR -->
+        <header id="hubHeader" class="relative z-20 flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-black/40 backdrop-blur-xl">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('#/hub')">
+                <div id="brandPixel" class="w-6 h-6 flex items-center justify-center"></div>
+                <h1 class="font-pixel text-xs sm:text-sm text-white tracking-widest uppercase">count everything</h1>
             </div>
 
-            <!-- COUNTERS GRID -->
-            <div id="hubCountersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                <!-- Dynamic Counter Cards Generated via JS -->
-            </div>
-
-            <!-- PIXEL DECORATION FOOTER -->
-            <footer class="mt-auto pt-8 border-t border-white/5 dark:border-white/5 light:border-black/5 flex items-center justify-between text-[11px] text-neutral-500">
-                <div class="flex items-center gap-2 font-pixel text-[9px]">
-                    <svg class="w-4 h-4 pixel-art text-emerald-400 fill-current" viewBox="0 0 16 16">
-                        <path d="M7 0h2v4H7zM3 4h10v2H3zM1 6h14v4H1zM3 10h10v2H3zM5 12h6v4H5z"/>
-                    </svg>
-                    <span>COOKIES ENABLED</span>
-                </div>
-                <span>Farbwechsel bei Klick</span>
-            </footer>
-        </main>
-
-
-        <!-- ==================================================== -->
-        <!-- VIEW 2: ULTRA-MINIMALIST FULLSCREEN COUNTER -->
-        <!-- ==================================================== -->
-        <main id="singleView" onclick="handleCounterTap(event)" class="hidden fixed inset-0 w-full h-full flex flex-col justify-between p-6 sm:p-10 select-none cursor-pointer bg-black dark:bg-black light:bg-white text-white dark:text-white light:text-black overflow-hidden z-40 transition-colors duration-300">
-            
-            <!-- TOP MINIMAL HEADER (ONLY BACK BUTTON & SELECTOR) -->
-            <header onclick="event.stopPropagation()" class="w-full flex items-center justify-between z-50">
-                
-                <!-- BACK TO HUB BUTTON -->
-                <button onclick="showHubView()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-neutral-900/80 dark:bg-neutral-900/80 light:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-800 light:hover:bg-neutral-200 border border-white/10 dark:border-white/10 light:border-black/10 transition-all cursor-pointer text-xs font-semibold tracking-wide">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    <span>Zurück</span>
-                </button>
-
-                <!-- COUNTER DROPDOWN SELECTOR -->
-                <select id="singleViewSelect" onchange="switchCounterFromSingle(this.value)" class="custom-select text-xs font-semibold py-2 pl-3.5 pr-8 rounded-xl border focus:outline-none cursor-pointer">
+            <!-- CONTROLS RIGHT -->
+            <div class="flex items-center gap-2">
+                <!-- THEME SELECTOR -->
+                <select id="themeSelect" onchange="changeTheme(this.value)" class="bg-white/[0.05] border border-white/[0.1] text-xs font-semibold px-3 py-1.5 rounded-xl text-neutral-300 focus:outline-none cursor-pointer">
+                    <option value="classic" class="bg-[#121212]">Pixel Classic</option>
+                    <option value="old" class="bg-[#121212]">Pixel Old</option>
+                    <option value="dinos" class="bg-[#121212]">Dinos</option>
+                    <option value="humans" class="bg-[#121212]">Humans</option>
+                    <option value="cats" class="bg-[#121212]">Cats</option>
+                    <option value="symbols" class="bg-[#121212]">Symbols</option>
+                    <option value="dragons" class="bg-[#121212]">Dragons</option>
+                    <option value="anime" class="bg-[#121212]">Anime</option>
                 </select>
 
-            </header>
+                <!-- DARK / LIGHT MODE -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-neutral-300 border border-white/[0.08] transition-all cursor-pointer" title="Dark / Light Mode">
+                    <i id="themeIcon" data-lucide="moon" class="w-4 h-4"></i>
+                </button>
 
-            <!-- ULTRA-MINIMAL CENTER COUNTER DISPLAY (ONLY NAME AND NUMBER) -->
-            <div class="flex-1 flex flex-col items-center justify-center text-center my-auto pointer-events-none">
-                <!-- COUNTER NAME -->
-                <h2 id="singleCounterName" class="text-sm sm:text-base font-semibold tracking-[0.25em] uppercase text-neutral-400 dark:text-neutral-400 light:text-neutral-600 mb-6 font-pixel">
-                    Zähler
-                </h2>
-
-                <!-- MAIN NUMBER DISPLAY -->
-                <span id="singleCountDisplay" class="font-mono-num text-8xl sm:text-[12rem] font-extrabold tracking-tight text-white dark:text-white light:text-black transition-all drop-shadow-2xl">
-                    0
-                </span>
+                <!-- SETTINGS & STATS -->
+                <button onclick="openSettingsModal()" class="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-neutral-300 border border-white/[0.08] transition-all cursor-pointer" title="Einstellungen">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </button>
             </div>
+        </header>
 
-            <!-- BOTTOM PIXEL ART ACCENT (PURE DECORATION) -->
-            <div class="w-full flex justify-center pointer-events-none opacity-20">
-                <svg class="w-6 h-6 pixel-art accent-text fill-current" viewBox="0 0 16 16">
-                    <path d="M7 0h2v2H7zM7 4h2v2H7zM7 8h2v2H7zM7 12h2v2H7z"/>
-                </svg>
+        <!-- VIEW 1: OVERVIEW HUB (PAGE 1) -->
+        <main id="hubView" class="flex-1 p-6 sm:p-10 overflow-y-auto no-scrollbar">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
+                    <div>
+                        <h2 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                            <span>Alle Zähler</span>
+                            <div id="pixelHeaderBadge" class="w-5 h-5 flex items-center justify-center inline-block"></div>
+                        </h2>
+                        <p class="text-xs text-neutral-500 mt-0.5">Klicke auf eine Karte, um den Zähler im Vollbild zu öffnen.</p>
+                    </div>
+                    <button id="btnNewCounter" onclick="createNewCounter()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-black font-semibold text-xs transition-all cursor-pointer shadow-lg">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Neuer Zähler
+                    </button>
+                </div>
+
+                <div id="countersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Cards via JS -->
+                </div>
             </div>
-
         </main>
 
+        <!-- VIEW 2: FULLSCREEN COUNTER PAGE (PAGE 2) -->
+        <main id="singleView" onclick="incrementActiveCounter(event)" class="hidden relative flex-1 flex flex-col items-center justify-center cursor-pointer group transition-colors duration-200 select-none overflow-hidden">
+            
+            <!-- ONLY BACK BUTTON -->
+            <button onclick="event.stopPropagation(); navigateTo('#/hub')" class="absolute top-6 left-6 z-30 p-3 rounded-2xl bg-white/[0.08] hover:bg-white/[0.15] text-neutral-200 hover:text-white border border-white/[0.1] backdrop-blur-md transition-all cursor-pointer shadow-lg" title="Zurück zur Übersicht">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+
+            <!-- PARTICLES CONTAINER -->
+            <div id="particleContainer" class="absolute inset-0 pointer-events-none z-20"></div>
+
+            <!-- MINIMAL CENTER DISPLAY -->
+            <div id="counterCard" class="relative z-10 flex flex-col items-center justify-center text-center p-6 transition-transform">
+                <!-- PIXEL ICON -->
+                <div id="activeCounterPixel" class="w-16 h-16 mb-4 animate-bounce flex items-center justify-center"></div>
+                
+                <!-- NAME -->
+                <span id="activeCounterName" class="text-base sm:text-lg font-bold tracking-widest uppercase text-neutral-300 mb-3">
+                    Counter
+                </span>
+
+                <!-- NUMBER -->
+                <span id="activeCountDisplay" class="font-mono-num text-8xl sm:text-[11rem] font-extrabold tracking-tight text-white drop-shadow-2xl">
+                    0
+                </span>
+
+                <!-- AUTOMATION BADGE -->
+                <span id="activeTriggerBadge" class="hidden mt-6 text-[11px] uppercase font-bold tracking-widest px-3.5 py-1 rounded-full bg-white/[0.08] border border-white/[0.12] text-amber-400">
+                    ⚡ Auto-Trigger Aktiv
+                </span>
+            </div>
+        </main>
     </div>
 
-    <!-- EDIT / CONFIG MODAL (FOR HUB EDITING) -->
+    <!-- EDIT / CUSTOMIZE COUNTER MODAL -->
     <div id="editModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class="bg-neutral-900 dark:bg-neutral-900 light:bg-white border border-white/10 dark:border-white/10 light:border-black/10 w-full max-w-md rounded-2xl p-6 shadow-2xl flex flex-col gap-6 text-sm text-neutral-100 dark:text-neutral-100 light:text-neutral-900">
-            
-            <div class="flex items-center justify-between pb-3 border-b border-white/10 dark:border-white/10 light:border-black/10">
-                <h3 class="font-bold text-sm tracking-wide font-pixel">Zähler Bearbeiten</h3>
-                <button onclick="closeEditModal()" class="p-1 text-neutral-400 hover:text-white dark:hover:text-white light:hover:text-black transition-colors">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+        <div onclick="event.stopPropagation()" class="bg-[#121212] border border-white/[0.1] w-full max-w-md rounded-3xl p-6 shadow-2xl flex flex-col gap-5 text-sm max-h-[90vh] overflow-y-auto no-scrollbar">
+            <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <h3 class="font-bold text-white text-sm">Zähler Einstellungen</h3>
+                <button onclick="closeEditModal()" class="p-1 text-neutral-400 hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-neutral-400 mb-1.5">Name</label>
-                    <input type="text" id="editNameInput" class="w-full bg-neutral-800 dark:bg-neutral-800 light:bg-neutral-100 border border-white/10 dark:border-white/10 light:border-black/10 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-blue-500">
+                    <label class="block text-xs text-neutral-400 mb-1">Name des Zählers</label>
+                    <input type="text" id="editNameInput" class="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3.5 py-2 text-white focus:outline-none text-xs">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-neutral-400 mb-1.5">Wert</label>
-                    <input type="number" id="editValueInput" class="w-full bg-neutral-800 dark:bg-neutral-800 light:bg-neutral-100 border border-white/10 dark:border-white/10 light:border-black/10 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-blue-500">
+                    <label class="block text-xs text-neutral-400 mb-1">Manueller Basis-Wert</label>
+                    <input type="number" id="editValueInput" class="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3.5 py-2 text-white font-mono focus:outline-none text-xs">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-neutral-400 mb-1">Automatischer Trigger Typ</label>
+                    <select id="editTriggerSelect" class="w-full bg-[#1a1a1a] border border-white/[0.1] rounded-xl px-3.5 py-2 text-white text-xs focus:outline-none">
+                        <option value="none">Manuell (Kein Trigger)</option>
+                        <option value="1s">Jede Sekunde (+1s)</option>
+                        <option value="1m">Jede Minute (+1m)</option>
+                        <option value="1d">Jeden Tag (+1d)</option>
+                        <option value="1y">Jedes Jahr (+1y)</option>
+                        <option value="load">Bei jedem Seitenaufruf (+1)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-neutral-400 mb-2">Akzentfarbe wählen</label>
+                    <div id="colorPickerList" class="flex items-center gap-2.5"></div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-neutral-400 mb-2">Pixel Art Icon Slot wählen</label>
+                    <div id="pixelPickerList" class="flex flex-wrap gap-2 bg-white/[0.03] p-3 rounded-xl border border-white/[0.06]"></div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 pt-2">
-                <button onclick="saveEditModal()" class="flex-1 py-2.5 bg-white light:bg-black text-black light:text-white font-bold rounded-xl text-xs hover:opacity-90 transition-opacity">
+            <div class="pt-3 border-t border-white/[0.08] flex justify-end gap-2">
+                <button id="btnSaveEdit" onclick="saveEditModal()" class="px-5 py-2 text-black font-semibold rounded-xl text-xs">
                     Speichern
-                </button>
-                <button onclick="closeEditModal()" class="py-2.5 px-4 bg-neutral-800 dark:bg-neutral-800 light:bg-neutral-200 text-neutral-300 dark:text-neutral-300 light:text-neutral-700 font-semibold rounded-xl text-xs">
-                    Abbrechen
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- SETTINGS & HIDDEN STATS MODAL -->
+    <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div onclick="event.stopPropagation()" class="bg-[#121212] border border-white/[0.1] w-full max-w-lg rounded-3xl p-6 shadow-2xl flex flex-col gap-6 text-sm max-h-[90vh] overflow-y-auto no-scrollbar">
+            
+            <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    Einstellungen & Statistiken
+                </h3>
+                <button onclick="closeSettingsModal()" class="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-white/[0.08] transition-colors">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- APP PRIMARY COLOR SELECTOR -->
+            <div>
+                <label class="block text-xs font-semibold text-neutral-300 mb-2">App Primärfarbe</label>
+                <div id="primaryColorPicker" class="flex items-center gap-2.5"></div>
+            </div>
+
+            <!-- TOGGLES -->
+            <div class="space-y-3">
+                <label class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+                    <span class="text-xs font-semibold text-neutral-300">Pixel-Partikel Effekte</span>
+                    <input type="checkbox" id="particleToggle" onchange="toggleParticleSetting(this.checked)" class="accent-white w-4 h-4" checked>
+                </label>
+
+                <label class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+                    <span class="text-xs font-semibold text-neutral-300">8-Bit Sound Effekte</span>
+                    <input type="checkbox" id="soundToggle" onchange="toggleSoundSetting(this.checked)" class="accent-white w-4 h-4" checked>
+                </label>
+            </div>
+
+            <!-- HIDDEN STATS SECTION -->
+            <div class="pt-4 border-t border-white/[0.08]">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3 flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+                    Versteckte Nutzungs-Statistik
+                </h4>
+                <div id="statsGrid" class="grid grid-cols-2 gap-2 text-xs"></div>
+            </div>
+
+            <!-- RESET DATA -->
+            <div class="pt-4 border-t border-white/[0.08]">
+                <button onclick="wipeAllData()" class="w-full py-2.5 px-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-2xl font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    Alle Zähler & Daten löschen
+                </button>
+            </div>
+
+        </div>
+    </div>
+
     <!-- JAVASCRIPT APP LOGIC -->
     <script>
-        const COOKIE_COUNTERS = "px_counters_data";
-        const COOKIE_ACTIVE_ID = "px_active_id";
-        const COOKIE_THEME = "px_theme_mode";
-        const COOKIE_ACCENT = "px_accent_color";
-        const COOKIE_ACCENT_RGB = "px_accent_rgb";
+        // RAW SVG PIXEL ART MATRIX DEFINITIONS FOR ALL THEMES
+        const PIXEL_MATRICES = {
+            classic: [
+                ["..1111..", ".111111.", "11..11..", "11111111", "..1..1..", ".1.11.1."],
+                ["...11...", "..1111..", ".111111.", "11.11.11", "11111111", "..1..1.."],
+                ["..1111..", ".1....1.", "1..11..1", "1..11..1", ".1....1.", "..1111.."],
+                ["...11...", "..1111..", ".11..11.", "11111111", ".11..11.", "..1111.."]
+            ],
+            old: [
+                ["..1111..", ".111111.", "11.11.11", "11111111", "11111111", "1.1..1.1"],
+                ["...11...", "..1111..", ".111111.", "111..111", "11111111", "..1..1.."],
+                [".111111.", "11111111", "11.11.11", "11111111", "11111111", "1.1.1.1."]
+            ],
+            dinos: [
+                ["...1111.", "...11.11", "...11111", "1..111..", "1111111.", ".11111.."],
+                ["..1111..", ".111111.", "11111111", ".111111.", "..1..1..", ".1....1."]
+            ],
+            humans: [
+                ["..1111..", "..1111..", "...11...", ".111111.", "..1111..", "..1..1.."],
+                ["...11...", "..1111..", ".111111.", "..1111..", ".1....1.", "1......1"]
+            ],
+            cats: [
+                ["1......1", "11....11", "11111111", "11.11.11", ".111111.", "..1..1.."],
+                [".1....1.", ".11..11.", ".111111.", "11.11.11", ".111111.", "...11..."]
+            ],
+            symbols: [
+                ["...11...", "..1111..", ".111111.", "11111111", ".111111.", "..1111.."],
+                ["1......1", ".1....1.", "..1..1..", "...11...", "..1..1..", ".1....1."]
+            ],
+            dragons: [
+                ["1......1", ".11..11.", ".111111.", "11111111", ".111111.", "1..11..1"],
+                ["...11...", "..1111..", "11111111", ".11..11.", "1......1", "11....11"]
+            ],
+            anime: [
+                ["..1111..", ".111111.", "11.11.11", "11111111", ".111111.", "..1..1.."],
+                [".11..11.", "11111111", "11.11.11", ".111111.", "..1111..", "...11..."]
+            ]
+        };
+
+        const PALETTE = ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899'];
 
         let counters = {};
         let activeId = "";
-        let currentTheme = "dark"; // 'dark' or 'light'
-        let editingCounterId = null;
+        let editingId = null;
+        let selectedColor = PALETTE[0];
+        let selectedPixelIdx = 0;
 
-        // ACCENT PALETTES FOR ON-CLICK DYNAMIC SHIFT
-        const colorPalette = [
-            { hex: '#3b82f6', rgb: '59, 130, 246' },   // Blue
-            { hex: '#10b981', rgb: '16, 185, 129' },  // Emerald
-            { hex: '#ec4899', rgb: '236, 72, 153' },  // Pink
-            { hex: '#f59e0b', rgb: '245, 158, 11' },   // Amber
-            { hex: '#8b5cf6', rgb: '139, 92, 246' },  // Purple
-            { hex: '#ef4444', rgb: '239, 68, 68' }    // Red
-        ];
-        let colorIndex = 0;
+        let primaryColor = '#3b82f6';
+        let currentTheme = "classic";
+        let isDarkMode = true;
+        let particlesEnabled = true;
+        let soundEnabled = true;
 
-        // COOKIE HELPERS
-        function setCookie(name, value, days = 365) {
-            const expires = new Date(Date.now() + days * 86400000).toUTCString();
-            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+        let stats = {
+            totalClicks: 0,
+            pageLoads: 0,
+            createdCounters: 0,
+            deletedCounters: 0,
+            themeChanges: 0,
+            autoTriggersExecuted: 0
+        };
+
+        // RENDER SVG FROM PIXEL MATRIX
+        function getPixelSVG(matrix, color = "#ffffff", size = 24) {
+            const rows = matrix.length;
+            const cols = matrix[0].length;
+            let rects = "";
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (matrix[r][c] === '1') {
+                        rects += `<rect x="${c}" y="${r}" width="1" height="1" fill="${color}" />`;
+                    }
+                }
+            }
+            return `<svg viewBox="0 0 ${cols} ${rows}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">${rects}</svg>`;
         }
 
-        function getCookie(name) {
+        function getCounterPixelSVG(pixelIdx, color = "#ffffff", size = 24) {
+            const themeMatrices = PIXEL_MATRICES[currentTheme] || PIXEL_MATRICES.classic;
+            const matrix = themeMatrices[pixelIdx % themeMatrices.length];
+            return getPixelSVG(matrix, color, size);
+        }
+
+        // STORAGE MANAGEMENT
+        function setStorage(key, value) {
+            const str = JSON.stringify(value);
+            const expires = new Date(Date.now() + 365 * 86400000).toUTCString();
+            document.cookie = `${key}=${encodeURIComponent(str)}; expires=${expires}; path=/; SameSite=Lax`;
+            try { localStorage.setItem(key, str); } catch(e) {}
+        }
+
+        function getStorage(key) {
             const cookies = document.cookie.split(';');
             for (let cookie of cookies) {
                 const [k, v] = cookie.trim().split('=');
-                if (k === name) return decodeURIComponent(v || '');
+                if (k === key) {
+                    try { return JSON.parse(decodeURIComponent(v)); } catch(e) {}
+                }
             }
+            try {
+                const ls = localStorage.getItem(key);
+                if (ls) return JSON.parse(ls);
+            } catch(e) {}
             return null;
         }
 
-        // INITIALIZATION
         function initApp() {
-            loadStateFromCookies();
-            applyTheme();
-            renderHubGrid();
-            renderSingleSelectOptions();
+            loadData();
+            stats.pageLoads = (stats.pageLoads || 0) + 1;
+            
+            executePageLoadTriggers();
+            recalculateTimeBasedCounters();
+            startIntervalTriggers();
+
+            window.addEventListener('hashchange', handleRouting);
+            handleRouting();
+
+            applyPrimaryColor();
             lucide.createIcons();
+            setupKeyboardShortcuts();
         }
 
-        function loadStateFromCookies() {
-            // Load Counters
-            const rawCounters = getCookie(COOKIE_COUNTERS);
-            if (rawCounters) {
-                try { counters = JSON.parse(rawCounters); } catch (e) { counters = {}; }
-            }
+        function loadData() {
+            counters = getStorage('ce_counters') || {};
+            activeId = getStorage('ce_active_id') || "";
+            currentTheme = getStorage('ce_theme') || "classic";
+            primaryColor = getStorage('ce_primary_color') || "#3b82f6";
+            isDarkMode = getStorage('ce_darkmode') !== false;
+            stats = getStorage('ce_stats') || stats;
+            particlesEnabled = getStorage('ce_particles') !== false;
+            soundEnabled = getStorage('ce_sound') !== false;
 
             if (Object.keys(counters).length === 0) {
                 const defaultId = 'c_' + Date.now();
-                counters[defaultId] = { id: defaultId, name: 'Main Counter', count: 0 };
+                counters[defaultId] = { 
+                    id: defaultId, 
+                    name: 'Standard Zähler', 
+                    baseCount: 0, 
+                    count: 0, 
+                    trigger: 'none', 
+                    pixelIdx: 0, 
+                    color: PALETTE[5],
+                    lastResetTimestamp: Date.now()
+                };
+                stats.createdCounters = 1;
             }
 
-            const savedActiveId = getCookie(COOKIE_ACTIVE_ID);
-            activeId = (savedActiveId && counters[savedActiveId]) ? savedActiveId : Object.keys(counters)[0];
-
-            // Load Theme
-            currentTheme = getCookie(COOKIE_THEME) || 'dark';
-
-            // Load Accent Color
-            const savedAccent = getCookie(COOKIE_ACCENT) || '#3b82f6';
-            const savedRgb = getCookie(COOKIE_ACCENT_RGB) || '59, 130, 246';
-            setAccentColor(savedAccent, savedRgb, false);
-        }
-
-        function saveAllState() {
-            setCookie(COOKIE_COUNTERS, JSON.stringify(counters));
-            setCookie(COOKIE_ACTIVE_ID, activeId);
-            setCookie(COOKIE_THEME, currentTheme);
-        }
-
-        // ACCENT COLOR & THEME MANAGERS
-        function setAccentColor(hex, rgb, save = true) {
-            document.documentElement.style.setProperty('--accent-color', hex);
-            document.documentElement.style.setProperty('--accent-rgb', rgb);
-            if (save) {
-                setCookie(COOKIE_ACCENT, hex);
-                setCookie(COOKIE_ACCENT_RGB, rgb);
+            if (!activeId || !counters[activeId]) {
+                activeId = Object.keys(counters)[0];
             }
+
+            document.getElementById('themeSelect').value = currentTheme;
+            document.getElementById('particleToggle').checked = particlesEnabled;
+            document.getElementById('soundToggle').checked = soundEnabled;
         }
 
-        function cycleNextAccentColor() {
-            colorIndex = (colorIndex + 1) % colorPalette.length;
-            const col = colorPalette[colorIndex];
-            setAccentColor(col.hex, col.rgb, true);
+        function saveData() {
+            setStorage('ce_counters', counters);
+            setStorage('ce_active_id', activeId);
+            setStorage('ce_theme', currentTheme);
+            setStorage('ce_primary_color', primaryColor);
+            setStorage('ce_darkmode', isDarkMode);
+            setStorage('ce_stats', stats);
+            setStorage('ce_particles', particlesEnabled);
+            setStorage('ce_sound', soundEnabled);
         }
 
-        function toggleThemeMode() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            applyTheme();
-            saveAllState();
+        // TIME CALCULATIONS FOR OFFLINE BACKGROUND PROGRESSION
+        function recalculateTimeBasedCounters() {
+            const now = Date.now();
+            let updated = false;
+
+            Object.values(counters).forEach(c => {
+                if (c.trigger && c.trigger !== 'none' && c.trigger !== 'load') {
+                    const start = c.lastResetTimestamp || now;
+                    const elapsed = now - start;
+                    let increments = 0;
+
+                    if (c.trigger === '1s') increments = Math.floor(elapsed / 1000);
+                    else if (c.trigger === '1m') increments = Math.floor(elapsed / 60000);
+                    else if (c.trigger === '1d') increments = Math.floor(elapsed / 86400000);
+                    else if (c.trigger === '1y') increments = Math.floor(elapsed / 31536000000);
+
+                    const newTotal = (c.baseCount || 0) + increments;
+                    if (c.count !== newTotal) {
+                        c.count = newTotal;
+                        updated = true;
+                    }
+                }
+            });
+
+            if (updated) saveData();
         }
 
-        function applyTheme() {
-            const body = document.body;
-            const icon = document.getElementById('themeIcon');
+        function handleRouting() {
+            const hash = window.location.hash || '#/hub';
+            if (hash.startsWith('#/c_')) {
+                const id = hash.replace('#/', '');
+                if (counters[id]) {
+                    activeId = id;
+                    saveData();
+                    showView('single');
+                    return;
+                }
+            }
+            showView('hub');
+        }
 
-            if (currentTheme === 'light') {
-                body.classList.remove('bg-[#080808]', 'text-neutral-100', 'dark');
-                body.classList.add('bg-neutral-50', 'text-neutral-900', 'light');
-                if (icon) icon.setAttribute('data-lucide', 'sun');
+        function navigateTo(hash) { window.location.hash = hash; }
+
+        function showView(viewName) {
+            const hub = document.getElementById('hubView');
+            const single = document.getElementById('singleView');
+            const header = document.getElementById('hubHeader');
+
+            if (viewName === 'single') {
+                hub.classList.add('hidden');
+                header.classList.add('hidden');
+                single.classList.remove('hidden');
             } else {
-                body.classList.remove('bg-neutral-50', 'text-neutral-900', 'light');
-                body.classList.add('bg-[#080808]', 'text-neutral-100', 'dark');
-                if (icon) icon.setAttribute('data-lucide', 'moon');
+                single.classList.add('hidden');
+                hub.classList.remove('hidden');
+                header.classList.remove('hidden');
             }
-            lucide.createIcons();
+            renderUI();
         }
 
-        // HUB OVERVIEW RENDER
+        function renderUI() {
+            recalculateTimeBasedCounters();
+            const activeCounter = counters[activeId];
+            if (!activeCounter) return;
+
+            // Single View
+            document.getElementById('activeCounterName').innerText = activeCounter.name;
+            document.getElementById('activeCounterName').style.color = activeCounter.color || primaryColor;
+            document.getElementById('activeCountDisplay').innerText = activeCounter.count;
+            document.getElementById('activeCounterPixel').innerHTML = getCounterPixelSVG(activeCounter.pixelIdx || 0, activeCounter.color || primaryColor, 64);
+
+            const triggerBadge = document.getElementById('activeTriggerBadge');
+            if (activeCounter.trigger && activeCounter.trigger !== 'none') {
+                triggerBadge.classList.remove('hidden');
+                triggerBadge.innerText = `⚡ Trigger: ${activeCounter.trigger}`;
+            } else {
+                triggerBadge.classList.add('hidden');
+            }
+
+            document.getElementById('pixelHeaderBadge').innerHTML = getCounterPixelSVG(0, primaryColor, 20);
+            document.getElementById('brandPixel').innerHTML = getCounterPixelSVG(0, primaryColor, 24);
+
+            renderHubGrid();
+            renderStats();
+        }
+
         function renderHubGrid() {
-            const grid = document.getElementById('hubCountersGrid');
+            const grid = document.getElementById('countersGrid');
             grid.innerHTML = '';
 
-            Object.values(counters).forEach((c, idx) => {
+            Object.values(counters).forEach(c => {
                 const isActive = c.id === activeId;
                 const card = document.createElement('div');
-                card.className = `group relative p-6 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+                card.className = `p-6 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between group ${
                     isActive 
-                        ? 'bg-neutral-900 dark:bg-neutral-900 light:bg-white border-blue-500/50 shadow-xl accent-glow' 
-                        : 'bg-neutral-900/40 dark:bg-neutral-900/40 light:bg-white border-white/5 dark:border-white/5 light:border-black/10 hover:border-white/20'
+                        ? 'bg-white/[0.08] border-white/30 shadow-2xl' 
+                        : 'bg-white/[0.03] border-white/[0.06] hover:border-white/20 hover:bg-white/[0.05]'
                 }`;
 
-                card.onclick = () => openFullscreenCounter(c.id);
-
-                // Pixel Icon choices based on index
-                const pixelIcons = [
-                    `<svg class="w-5 h-5 pixel-art text-amber-400 fill-current" viewBox="0 0 16 16"><path d="M7 0h2v2H7zM7 4h2v2H7zM7 8h2v2H7zM7 12h2v2H7z"/></svg>`,
-                    `<svg class="w-5 h-5 pixel-art text-rose-400 fill-current" viewBox="0 0 16 16"><path d="M2 3h4v2H2zM10 3h4v2h-4zM0 5h16v2H0zM2 9h12v2H2zM6 13h4v2H6z"/></svg>`,
-                    `<svg class="w-5 h-5 pixel-art text-emerald-400 fill-current" viewBox="0 0 16 16"><path d="M7 0h2v4H7zM3 4h10v2H3zM1 6h14v4H1zM5 12h6v4H5z"/></svg>`
-                ];
-                const selectedSvg = pixelIcons[idx % pixelIcons.length];
+                card.onclick = () => {
+                    activeId = c.id;
+                    saveData();
+                    navigateTo(`#/${c.id}`);
+                };
 
                 card.innerHTML = `
-                    <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
-                            ${selectedSvg}
-                            <span class="text-xs font-bold tracking-wider uppercase text-neutral-300 dark:text-neutral-300 light:text-neutral-800 truncate max-w-[130px]">
-                                ${escapeHtml(c.name)}
-                            </span>
+                            <div class="w-7 h-7 flex items-center justify-center">${getCounterPixelSVG(c.pixelIdx || 0, c.color || primaryColor, 28)}</div>
+                            <span class="text-xs font-bold uppercase tracking-wider truncate max-w-[120px]" style="color: ${c.color || primaryColor}">${escapeHtml(c.name)}</span>
                         </div>
-                        <div class="flex items-center gap-1" onclick="event.stopPropagation()">
-                            <button onclick="openEditModal('${c.id}')" class="p-1 text-neutral-500 hover:text-white dark:hover:text-white light:hover:text-black transition-colors" title="Bearbeiten">
-                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                        <div class="flex items-center gap-1">
+                            <button onclick="event.stopPropagation(); openEditModal('${c.id}')" class="p-1 text-neutral-500 hover:text-white transition-colors" title="Einstellungen">
+                                <i data-lucide="settings-2" class="w-3.5 h-3.5"></i>
                             </button>
-                            <button onclick="resetCounter('${c.id}')" class="p-1 text-neutral-500 hover:text-amber-400 transition-colors" title="Auf 0 zurücksetzen">
-                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                            </button>
-                            ${Object.keys(counters).length > 1 ? `
-                            <button onclick="deleteCounter('${c.id}')" class="p-1 text-neutral-500 hover:text-red-400 transition-colors" title="Löschen">
+                            <button onclick="event.stopPropagation(); deleteCounter('${c.id}')" class="p-1 text-neutral-500 hover:text-red-400 transition-colors" title="Löschen">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            </button>` : ''}
+                            </button>
                         </div>
                     </div>
-
+                    
                     <div class="my-6">
-                        <span class="font-mono-num text-6xl font-extrabold text-white dark:text-white light:text-black tracking-tight">${c.count}</span>
+                        <span class="font-mono-num text-5xl font-extrabold text-white">${c.count}</span>
                     </div>
 
-                    <div class="flex items-center justify-between text-xs text-neutral-500 pt-3 border-t border-white/5 dark:border-white/5 light:border-black/5">
-                        <span class="text-[11px] font-semibold text-neutral-400">Vollbild öffnen →</span>
-                        ${isActive ? '<span class="text-[9px] font-pixel text-emerald-400">AKTIV</span>' : ''}
+                    <div class="flex items-center justify-between text-xs border-t border-white/[0.06] pt-3">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.05] text-neutral-400 font-mono">
+                            ${c.trigger && c.trigger !== 'none' ? 'Trigger: ' + c.trigger : 'Manuell'}
+                        </span>
+                        <button onclick="event.stopPropagation(); resetCounter('${c.id}')" class="p-1 text-neutral-500 hover:text-amber-400 transition-colors" title="Zurücksetzen">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        </button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -428,134 +554,285 @@
             lucide.createIcons();
         }
 
-        // FULLSCREEN COUNTER VIEW LOGIC
-        function openFullscreenCounter(id) {
-            if (counters[id]) {
-                activeId = id;
-                saveAllState();
-            }
-            renderSingleCounterView();
-            document.getElementById('singleView').classList.remove('hidden');
+        function renderStats() {
+            const grid = document.getElementById('statsGrid');
+            if (!grid) return;
+            grid.innerHTML = `
+                <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Klicks gesamt:</span> <strong class="text-white font-mono">${stats.totalClicks || 0}</strong></div>
+                <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Seitenaufrufe:</span> <strong class="text-white font-mono">${stats.pageLoads || 0}</strong></div>
+                <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Erstellte Zähler:</span> <strong class="text-white font-mono">${stats.createdCounters || 0}</strong></div>
+                <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Gelöschte Zähler:</span> <strong class="text-white font-mono">${stats.deletedCounters || 0}</strong></div>
+                <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Theme Wechsel:</span> <strong class="text-white font-mono">${stats.themeChanges || 0}</strong></div>
+                <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Auto-Triggers:</span> <strong class="text-white font-mono">${stats.autoTriggersExecuted || 0}</strong></div>
+            `;
         }
 
-        function showHubView() {
-            document.getElementById('singleView').classList.add('hidden');
-            renderHubGrid();
-        }
-
-        function renderSingleCounterView() {
-            const current = counters[activeId];
-            if (!current) return;
-
-            document.getElementById('singleCounterName').innerText = current.name;
-            document.getElementById('singleCountDisplay').innerText = current.count;
-
-            renderSingleSelectOptions();
-        }
-
-        function renderSingleSelectOptions() {
-            const select = document.getElementById('singleViewSelect');
-            select.innerHTML = '';
-            Object.values(counters).forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.id;
-                opt.textContent = `${c.name} (${c.count})`;
-                if (c.id === activeId) opt.selected = true;
-                select.appendChild(opt);
-            });
-        }
-
-        function switchCounterFromSingle(id) {
-            if (counters[id]) {
-                activeId = id;
-                saveAllState();
-                renderSingleCounterView();
-            }
-        }
-
-        function handleCounterTap(e) {
-            // Increment active counter
-            if (!counters[activeId]) return;
+        function incrementActiveCounter(e) {
+            if (e) e.stopPropagation();
             counters[activeId].count++;
+            counters[activeId].baseCount = (counters[activeId].baseCount || 0) + 1;
+            stats.totalClicks = (stats.totalClicks || 0) + 1;
+            saveData();
 
-            // Cycle accent color dynamically on click
-            cycleNextAccentColor();
+            playBleepSound();
+            if (particlesEnabled && e) spawnParticle(e.clientX, e.clientY);
 
-            // Spring pop animation
-            const display = document.getElementById('singleCountDisplay');
-            display.classList.remove('animate-pop');
-            void display.offsetWidth;
-            display.classList.add('animate-pop');
+            const card = document.getElementById('counterCard');
+            card.classList.remove('animate-spring');
+            void card.offsetWidth;
+            card.classList.add('animate-spring');
 
-            saveAllState();
-            renderSingleCounterView();
+            renderUI();
         }
 
-        // EDIT / MODAL ACTIONS
+        function createNewCounter() {
+            const name = prompt('Name für neuen Zähler:', 'Neuer Zähler');
+            if (!name || !name.trim()) return;
+
+            const newId = 'c_' + Date.now();
+            const randomColor = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+
+            counters[newId] = { 
+                id: newId, 
+                name: name.trim(), 
+                baseCount: 0, 
+                count: 0, 
+                trigger: 'none', 
+                pixelIdx: 0, 
+                color: randomColor,
+                lastResetTimestamp: Date.now()
+            };
+            activeId = newId;
+            stats.createdCounters = (stats.createdCounters || 0) + 1;
+            saveData();
+            renderUI();
+        }
+
         function openEditModal(id) {
-            editingCounterId = id;
+            editingId = id;
             const c = counters[id];
             if (!c) return;
 
             document.getElementById('editNameInput').value = c.name;
             document.getElementById('editValueInput').value = c.count;
+            document.getElementById('editTriggerSelect').value = c.trigger || 'none';
+            selectedColor = c.color || primaryColor;
+            selectedPixelIdx = c.pixelIdx || 0;
+
+            // Render Color Picker
+            const colorContainer = document.getElementById('colorPickerList');
+            colorContainer.innerHTML = '';
+            PALETTE.forEach(col => {
+                const dot = document.createElement('div');
+                dot.className = `color-dot ${col === selectedColor ? 'selected' : ''}`;
+                dot.style.backgroundColor = col;
+                dot.onclick = () => {
+                    selectedColor = col;
+                    document.querySelectorAll('#colorPickerList .color-dot').forEach(d => d.classList.remove('selected'));
+                    dot.classList.add('selected');
+                };
+                colorContainer.appendChild(dot);
+            });
+
+            // Render Pixel Pickers
+            const pixelContainer = document.getElementById('pixelPickerList');
+            pixelContainer.innerHTML = '';
+            const themeMatrices = PIXEL_MATRICES[currentTheme] || PIXEL_MATRICES.classic;
+            themeMatrices.forEach((_, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `p-2 rounded-xl flex items-center justify-center ${idx === selectedPixelIdx ? 'bg-white/20 border border-white/40' : 'hover:bg-white/10'}`;
+                btn.innerHTML = getCounterPixelSVG(idx, selectedColor, 28);
+                btn.onclick = () => {
+                    selectedPixelIdx = idx;
+                    document.querySelectorAll('#pixelPickerList button').forEach(b => b.className = 'p-2 rounded-xl flex items-center justify-center hover:bg-white/10');
+                    btn.className = 'p-2 rounded-xl flex items-center justify-center bg-white/20 border border-white/40';
+                };
+                pixelContainer.appendChild(btn);
+            });
+
             document.getElementById('editModal').classList.remove('hidden');
         }
 
-        function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
-            editingCounterId = null;
-        }
-
         function saveEditModal() {
-            if (!editingCounterId || !counters[editingCounterId]) return;
+            if (!editingId || !counters[editingId]) return;
+            const newName = document.getElementById('editNameInput').value.trim();
+            const newVal = parseInt(document.getElementById('editValueInput').value, 10);
+            const newTrigger = document.getElementById('editTriggerSelect').value;
 
-            const name = document.getElementById('editNameInput').value.trim();
-            const val = parseInt(document.getElementById('editValueInput').value, 10);
+            if (newName) counters[editingId].name = newName;
+            
+            const targetVal = isNaN(newVal) ? 0 : newVal;
+            counters[editingId].count = targetVal;
+            counters[editingId].baseCount = targetVal;
+            counters[editingId].trigger = newTrigger;
+            counters[editingId].color = selectedColor;
+            counters[editingId].pixelIdx = selectedPixelIdx;
+            counters[editingId].lastResetTimestamp = Date.now();
 
-            counters[editingCounterId].name = name || 'Counter';
-            counters[editingCounterId].count = isNaN(val) ? 0 : val;
-
-            saveAllState();
+            saveData();
             closeEditModal();
-            renderHubGrid();
+            renderUI();
         }
 
-        function openNewCounterPrompt() {
-            const name = prompt('Name für neuen Zähler:', 'Zähler');
-            if (name !== null) {
-                const newId = 'c_' + Date.now();
-                counters[newId] = { id: newId, name: name.trim() || 'Zähler', count: 0 };
-                activeId = newId;
-                saveAllState();
-                renderHubGrid();
+        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
+
+        function deleteCounter(id) {
+            if (Object.keys(counters).length <= 1) {
+                alert('Es muss mindestens ein Zähler existieren.');
+                return;
             }
+            delete counters[id];
+            stats.deletedCounters = (stats.deletedCounters || 0) + 1;
+            if (activeId === id) activeId = Object.keys(counters)[0];
+            saveData();
+            renderUI();
         }
 
         function resetCounter(id) {
             if (counters[id]) {
                 counters[id].count = 0;
-                saveAllState();
-                renderHubGrid();
+                counters[id].baseCount = 0;
+                counters[id].lastResetTimestamp = Date.now();
+                saveData();
+                renderUI();
             }
         }
 
-        function deleteCounter(id) {
-            if (Object.keys(counters).length <= 1) return;
-            delete counters[id];
-            if (activeId === id) {
-                activeId = Object.keys(counters)[0];
+        function changeTheme(themeKey) {
+            if (PIXEL_MATRICES[themeKey]) {
+                currentTheme = themeKey;
+                stats.themeChanges = (stats.themeChanges || 0) + 1;
+                saveData();
+                renderUI();
             }
-            saveAllState();
-            renderHubGrid();
+        }
+
+        function applyPrimaryColor() {
+            document.getElementById('btnNewCounter').style.backgroundColor = primaryColor;
+            document.getElementById('btnSaveEdit').style.backgroundColor = primaryColor;
+            
+            // Primary Color Picker in Settings
+            const container = document.getElementById('primaryColorPicker');
+            if (container) {
+                container.innerHTML = '';
+                PALETTE.forEach(col => {
+                    const dot = document.createElement('div');
+                    dot.className = `color-dot ${col === primaryColor ? 'selected' : ''}`;
+                    dot.style.backgroundColor = col;
+                    dot.onclick = () => {
+                        primaryColor = col;
+                        saveData();
+                        applyPrimaryColor();
+                        renderUI();
+                    };
+                    container.appendChild(dot);
+                });
+            }
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            const body = document.getElementById('appBody');
+            const box = document.getElementById('mainBox');
+            const icon = document.getElementById('themeIcon');
+
+            if (isDarkMode) {
+                body.className = body.className.replace('bg-neutral-200', 'bg-[#050505]');
+                box.className = box.className.replace('bg-white text-black', 'bg-[#0e0e0e] text-neutral-200');
+                icon.setAttribute('data-lucide', 'moon');
+            } else {
+                body.className = body.className.replace('bg-[#050505]', 'bg-neutral-200');
+                box.className = box.className.replace('bg-[#0e0e0e] text-neutral-200', 'bg-white text-black');
+                icon.setAttribute('data-lucide', 'sun');
+            }
+            saveData();
+            lucide.createIcons();
+        }
+
+        function executePageLoadTriggers() {
+            Object.values(counters).forEach(c => {
+                if (c.trigger === 'load') {
+                    c.count++;
+                    c.baseCount = (c.baseCount || 0) + 1;
+                    stats.autoTriggersExecuted = (stats.autoTriggersExecuted || 0) + 1;
+                }
+            });
+            saveData();
+        }
+
+        function startIntervalTriggers() {
+            setInterval(() => {
+                recalculateTimeBasedCounters();
+                if (!document.getElementById('singleView').classList.contains('hidden') || !document.getElementById('hubView').classList.contains('hidden')) {
+                    renderUI();
+                }
+            }, 1000);
+        }
+
+        function spawnParticle(x, y) {
+            const container = document.getElementById('particleContainer');
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerHTML = getCounterPixelSVG(counters[activeId].pixelIdx || 0, counters[activeId].color || primaryColor, 32);
+            p.style.left = `${x}px`;
+            p.style.top = `${y}px`;
+            container.appendChild(p);
+            setTimeout(() => p.remove(), 600);
+        }
+
+        function playBleepSound() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(440 + Math.random() * 200, ctx.currentTime);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch(e) {}
+        }
+
+        function openSettingsModal() { 
+            applyPrimaryColor();
+            document.getElementById('settingsModal').classList.remove('hidden'); 
+        }
+        function closeSettingsModal() { document.getElementById('settingsModal').classList.add('hidden'); }
+        function toggleParticleSetting(val) { particlesEnabled = val; saveData(); }
+        function toggleSoundSetting(val) { soundEnabled = val; saveData(); }
+
+        function wipeAllData() {
+            if (confirm('Wirklich ALLE Zähler und Statistiken löschen?')) {
+                counters = {};
+                stats = { totalClicks: 0, pageLoads: 0, createdCounters: 0, deletedCounters: 0, themeChanges: 0, autoTriggersExecuted: 0 };
+                initApp();
+                closeSettingsModal();
+            }
+        }
+
+        function setupKeyboardShortcuts() {
+            window.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    if (document.getElementById('singleView').classList.contains('hidden')) return;
+                    e.preventDefault();
+                    if (!e.repeat) incrementActiveCounter();
+                } else if (e.key === 'Escape') {
+                    closeSettingsModal();
+                    closeEditModal();
+                    navigateTo('#/hub');
+                }
+            });
         }
 
         function escapeHtml(str) {
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         }
 
-        // LAUNCH APP IN HUB OVERVIEW
-        window.addEventListener('DOMContentLoaded', initApp);
+        initApp();
     </script>
 </body>
 </html>
