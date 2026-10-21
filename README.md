@@ -6,10 +6,9 @@ Ein eleganter, extrem minimalistischer Zähler (Single-Tap Counter) im Dark Mode
 
 ## Features
 
-- **Minimalistisches Dark-Design**: Symmetrische Benutzeroberfläche mit dunklem Theme und flüssigen Mikro-Animationen.
-- **Single-Tap & Tastatur-Steuerung**: 
+- **Minimalistisches Dark-Design**: Symmetrische Benutzeroberfläche mit dunklem Theme, verschidenen Farben und flüssigen Mikro-Animationen.
+- **Single-Tap**: 
   - Klick auf die gesamte Fläche zählt den Zähler hoch (+1).
-  - Steuerung via Leertaste oder Enter (inklusive Hold-Protection: Gedrückthalten erhöht den Zähler nur 1x).
 - **Cookie-Speicherung**: 
   - Alle Zählerstände und Namen werden in `document.cookie` gespeichert und bleiben nach dem Schließen des Browsers erhalten.
 - **Multi-Counter-Verwaltung**:
@@ -22,22 +21,12 @@ Ein eleganter, extrem minimalistischer Zähler (Single-Tap Counter) im Dark Mode
 
 ---
 
-## Tastatur-Shortcuts
-
-| Taste | Aktion |
-| :--- | :--- |
-| Leertaste / Enter | Zähler um +1 erhöhen (nur 1x pro Tastenanschlag) |
-| i | Einstellungen (Config-Modal) öffnen / schließen |
-| ESC | Einstellungen-Modal schließen |
-
----
-
 ## Technologie
 
 - **HTML5 & Vanilla JavaScript**: Keine externen Framework-Abhängigkeiten.
 - **Tailwind CSS**: Modernes Utility-First Styling (via CDN).
 - **Lucide Icons**: Schlanke Vector-Icons für Einstellungen & Plus-Indikator.
-
+- **Icons oder GIFs**: Als Symbole für ein Counter können vorgefertigte Pixel Arts oder GIF-Urls genommen werden.
 ---
 
 ## Installation & Benutzung
