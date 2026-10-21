@@ -1,621 +1,561 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="de" class="h-full select-none antialiased">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal Counter</title>
+    <title>Pixel Counter Hub</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font Inter -->
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                    colors: {
-                        dark: {
-                            bg: '#0a0a0a',
-                            card: '#161616',
-                            inner: '#1a1a1a',
-                            border: '#2a2a2a',
-                            hover: '#222222',
-                            text: '#f0f0f0',
-                            muted: '#9ca3af'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --accent-color: #3b82f6;
+            --accent-rgb: 59, 130, 246;
+        }
+
         body {
-            background-color: #0a0a0a;
-            color: #f0f0f0;
-            font-family: 'Inter', system-ui, sans-serif;
-            touch-action: manipulation;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
-        /* Number pop animation */
-        .number-pop {
-            animation: pop 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .font-pixel {
+            font-family: 'Press Start 2P', monospace;
         }
 
-        @keyframes pop {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.04); }
-            100% { transform: scale(1); opacity: 1; }
+        .font-mono-num {
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Visual active state for tap card */
-        .tap-active {
-            background-color: #121212 !important;
-            transform: scale(0.995);
+        /* Pixel Art Styling Crisp Rendering */
+        .pixel-art {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
         }
 
-        /* Hide standard spin buttons on number inputs */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
+        /* Dynamic Custom Select Box */
+        .custom-select {
+            appearance: none;
             -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        /* Custom Dark Select Box Styling */
-        select.custom-dark-select {
-            background-color: #1a1a1a !important;
-            color: #f0f0f0 !important;
-            border-color: #333333 !important;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%9ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-size: 1.25em 1.25em;
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
-            background-size: 1.25em 1.25em;
             padding-right: 2.5rem;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
         }
 
-        select.custom-dark-select option {
-            background-color: #161616 !important;
-            color: #f0f0f0 !important;
-            padding: 10px;
+        .dark .custom-select {
+            background-color: #121212;
+            color: #f5f5f5;
+            border-color: rgba(255, 255, 255, 0.1);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23888888' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
         }
 
-        *:focus-visible {
-            outline: 2px solid #525252;
-            outline-offset: 2px;
+        .light .custom-select {
+            background-color: #ffffff;
+            color: #111111;
+            border-color: rgba(0, 0, 0, 0.12);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23555555' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
         }
 
-        /* Custom Scrollbar for Modal */
-        ::-webkit-scrollbar {
-            width: 6px;
+        /* Spring Animation for Tap Count */
+        @keyframes springPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.06); }
+            100% { transform: scale(1); }
         }
-        ::-webkit-scrollbar-track {
-            background: #161616;
+        .animate-pop {
+            animation: springPop 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.2);
         }
-        ::-webkit-scrollbar-thumb {
-            background: #333333;
-            border-radius: 3px;
+
+        /* Hide scrollbars */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Custom Accent Glow */
+        .accent-glow {
+            box-shadow: 0 0 35px -5px rgba(var(--accent-rgb), 0.35);
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #444444;
+        .accent-border {
+            border-color: var(--accent-color) !important;
+        }
+        .accent-bg {
+            background-color: var(--accent-color) !important;
+        }
+        .accent-text {
+            color: var(--accent-color) !important;
         }
     </style>
 </head>
-<body class="h-screen w-screen p-4 sm:p-6 md:p-8 select-none overflow-hidden relative box-border bg-dark-bg">
+<body class="h-full w-full bg-[#080808] text-neutral-100 dark overflow-x-hidden">
 
-    <!-- Equal Margin Main Counter Card Container -->
-    <main 
-        id="tapArea"
-        class="w-full h-full bg-dark-bg hover:bg-dark-card/40 border border-dark-border rounded-3xl p-6 flex flex-col items-center justify-between cursor-pointer transition-all duration-150 shadow-2xl relative overflow-hidden group"
-        role="button"
-        tabindex="0"
-        aria-label="Tap to increment counter"
-    >
-        <!-- Top Right 'i' Info/Config Button inside the main card -->
-        <div class="w-full flex justify-between items-center z-10 pointer-events-none">
-            <span class="text-[11px] text-dark-muted/40 tracking-widest uppercase font-medium">
-                Tap anywhere to count
-            </span>
-            <button 
-                id="openConfigBtn" 
-                class="pointer-events-auto w-10 h-10 rounded-full flex items-center justify-center text-dark-muted hover:text-white bg-dark-card hover:bg-dark-hover border border-dark-border transition-all duration-200 shadow-sm"
-                title="Counter Settings (i)"
-                aria-label="Counter Settings"
-            >
-                <i class="fa-solid fa-info text-sm"></i>
-            </button>
-        </div>
+    <!-- MAIN APP WRAPPER -->
+    <div id="appRoot" class="min-h-full w-full flex flex-col relative">
 
-        <!-- Center Counter Display -->
-        <div class="my-auto flex flex-col items-center justify-center pointer-events-none text-center">
-            <!-- Counter Title -->
-            <h1 id="displayTitle" class="text-xl sm:text-2xl font-medium text-dark-muted mb-4 tracking-wide text-center px-4 transition-colors group-hover:text-neutral-300 truncate max-w-full">
-                Counter
-            </h1>
+        <!-- ==================================================== -->
+        <!-- VIEW 1: OVERVIEW MAIN MENU / HUB (DEFAULT START) -->
+        <!-- ==================================================== -->
+        <main id="hubView" class="flex-1 w-full max-w-6xl mx-auto p-5 sm:p-8 flex flex-col gap-8">
             
-            <span id="counterValue" class="text-8xl sm:text-9xl md:text-[10rem] font-bold tracking-tight text-white font-mono transition-transform">
-                0
-            </span>
-            <div class="mt-6 text-dark-muted text-3xl font-light opacity-30 group-hover:opacity-75 transition-opacity">
-                <i class="fa-solid fa-plus"></i>
-            </div>
-        </div>
+            <!-- TOP BAR / HUB HEADER -->
+            <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10 dark:border-white/10 light:border-black/10">
+                <div class="flex items-center gap-3">
+                    <!-- PIXEL ART STAR LOGO -->
+                    <svg class="w-8 h-8 pixel-art text-amber-400 fill-current" viewBox="0 0 16 16">
+                        <path d="M7 0h2v2H7zM7 2h2v2H7zM5 4h6v2H5zM1 6h14v2H1zM3 8h10v2H3zM5 10h6v2H5zM3 12h2v4H3zM11 12h2v4h-2z"/>
+                    </svg>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-wider font-pixel text-white dark:text-white light:text-black">
+                            PIXEL<span class="accent-text">.COUNT</span>
+                        </h1>
+                        <p class="text-xs text-neutral-400 dark:text-neutral-400 light:text-neutral-600 mt-0.5">
+                            Übersicht aller Zähler
+                        </p>
+                    </div>
+                </div>
 
-        <!-- Bottom Guidance inside card -->
-        <div class="text-xs text-dark-muted/70 text-center pointer-events-none">
-            Press <kbd class="px-1.5 py-0.5 bg-dark-card border border-dark-border rounded text-neutral-300 font-mono text-[10px]">Space</kbd> or <kbd class="px-1.5 py-0.5 bg-dark-card border border-dark-border rounded text-neutral-300 font-mono text-[10px]">Enter</kbd> to count
-        </div>
-    </main>
+                <!-- CONTROLS & SETTINGS (DARK/LIGHT + ACCENT PALETTE) -->
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    
+                    <!-- DYNAMIC COLOR PALETTE PICKER -->
+                    <div class="flex items-center gap-1.5 p-1.5 rounded-xl bg-neutral-900/80 dark:bg-neutral-900/80 light:bg-neutral-200/80 border border-white/10 dark:border-white/10 light:border-black/10">
+                        <span class="text-[10px] font-pixel px-1 text-neutral-400 dark:text-neutral-400 light:text-neutral-600">COLOR</span>
+                        <button onclick="setAccentColor('#3b82f6', '59, 130, 246')" class="w-5 h-5 rounded-md bg-blue-500 hover:scale-110 transition-transform cursor-pointer" title="Blau"></button>
+                        <button onclick="setAccentColor('#10b981', '16, 185, 129')" class="w-5 h-5 rounded-md bg-emerald-500 hover:scale-110 transition-transform cursor-pointer" title="Smaragd"></button>
+                        <button onclick="setAccentColor('#ec4899', '236, 72, 153')" class="w-5 h-5 rounded-md bg-pink-500 hover:scale-110 transition-transform cursor-pointer" title="Rosa"></button>
+                        <button onclick="setAccentColor('#f59e0b', '245, 158, 11')" class="w-5 h-5 rounded-md bg-amber-500 hover:scale-110 transition-transform cursor-pointer" title="Amber"></button>
+                        <button onclick="setAccentColor('#8b5cf6', '139, 92, 246')" class="w-5 h-5 rounded-md bg-purple-500 hover:scale-110 transition-transform cursor-pointer" title="Lila"></button>
+                    </div>
 
-    <!-- Quick Config / Multi-Counter Drawer Modal -->
-    <div id="configModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-200">
-        <div class="bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 max-h-[90vh] overflow-y-auto">
-            
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center pb-3 border-b border-dark-border">
-                <h2 class="text-xs font-bold text-neutral-300 tracking-wider uppercase">Counter Settings</h2>
-                <button id="closeConfigBtn" class="text-dark-muted hover:text-white p-1.5 rounded-lg hover:bg-dark-hover transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                    <!-- DARK / LIGHT MODE TOGGLE -->
+                    <button onclick="toggleThemeMode()" class="p-2.5 rounded-xl bg-neutral-900 dark:bg-neutral-900 light:bg-neutral-200 text-neutral-200 dark:text-neutral-200 light:text-neutral-800 border border-white/10 dark:border-white/10 light:border-black/10 hover:scale-105 transition-all cursor-pointer flex items-center justify-center" title="Dark/Light Mode Wechseln">
+                        <i id="themeIcon" data-lucide="moon" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- ACTION BANNER: NEW COUNTER -->
+            <div class="flex items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900/50 dark:bg-neutral-900/50 light:bg-neutral-100 border border-white/5 dark:border-white/5 light:border-black/5">
+                <div class="flex items-center gap-3">
+                    <!-- PIXEL ART HEART SVG -->
+                    <svg class="w-6 h-6 pixel-art text-rose-500 fill-current" viewBox="0 0 16 16">
+                        <path d="M2 3h4v2H2zM10 3h4v2h-4zM0 5h8v2H0zM8 5h8v2H8zM0 7h16v2H0zM2 9h12v2H2zM4 11h8v2H4zM6 13h4v2H6z"/>
+                    </svg>
+                    <span class="text-xs font-semibold tracking-wider uppercase text-neutral-300 dark:text-neutral-300 light:text-neutral-700">
+                        Zähler verwalten
+                    </span>
+                </div>
+
+                <button onclick="openNewCounterPrompt()" class="flex items-center gap-2 px-4 py-2 rounded-xl accent-bg text-white font-semibold text-xs hover:opacity-90 transition-all cursor-pointer shadow-lg shadow-blue-500/10">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Neuer Zähler
                 </button>
             </div>
 
-            <!-- SECTION 1: Counter Selector -->
-            <div class="flex flex-col gap-2">
-                <label for="counterSelect" class="block text-xs uppercase font-semibold text-dark-muted tracking-wider">Switch Counter</label>
-                <div class="flex gap-2">
-                    <select 
-                        id="counterSelect" 
-                        class="custom-dark-select flex-1 bg-dark-inner border border-dark-border text-dark-text rounded-xl px-3.5 py-2.5 focus:border-neutral-400 focus:outline-none text-sm font-medium transition-colors cursor-pointer"
-                    >
-                    </select>
-                    <button 
-                        id="newCounterBtn" 
-                        type="button" 
-                        class="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-100 border border-dark-border rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-sm"
-                        title="Create New Counter"
-                    >
-                        <i class="fa-solid fa-plus text-xs"></i> New
-                    </button>
-                </div>
+            <!-- COUNTERS GRID -->
+            <div id="hubCountersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Dynamic Counter Cards Generated via JS -->
             </div>
 
-            <!-- SECTION 2: Inline New Counter Form -->
-            <div id="newCounterForm" class="hidden flex-col gap-3 p-4 bg-dark-inner border border-dark-border rounded-2xl">
-                <div class="text-xs uppercase font-bold text-neutral-300 tracking-wider">Create New Counter</div>
-                <input 
-                    type="text" 
-                    id="newCounterNameInput" 
-                    placeholder="Enter counter name..."
-                    class="w-full bg-dark-card border border-dark-border text-dark-text rounded-xl px-3.5 py-2 text-sm focus:border-neutral-400 focus:outline-none placeholder:text-neutral-500"
-                />
-                <div class="flex justify-end gap-2 pt-1">
-                    <button 
-                        id="cancelNewCounterBtn" 
-                        type="button" 
-                        class="px-3 py-1.5 text-xs text-dark-muted hover:text-white transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button 
-                        id="confirmNewCounterBtn" 
-                        type="button" 
-                        class="px-3.5 py-1.5 bg-white text-black rounded-lg text-xs font-bold hover:bg-neutral-200 transition-colors shadow-sm"
-                    >
-                        Add Counter
-                    </button>
+            <!-- PIXEL DECORATION FOOTER -->
+            <footer class="mt-auto pt-8 border-t border-white/5 dark:border-white/5 light:border-black/5 flex items-center justify-between text-[11px] text-neutral-500">
+                <div class="flex items-center gap-2 font-pixel text-[9px]">
+                    <svg class="w-4 h-4 pixel-art text-emerald-400 fill-current" viewBox="0 0 16 16">
+                        <path d="M7 0h2v4H7zM3 4h10v2H3zM1 6h14v4H1zM3 10h10v2H3zM5 12h6v4H5z"/>
+                    </svg>
+                    <span>COOKIES ENABLED</span>
                 </div>
-            </div>
+                <span>Farbwechsel bei Klick</span>
+            </footer>
+        </main>
 
-            <!-- SECTION 3: Current Counter Settings -->
-            <div class="flex flex-col gap-4 border-t border-dark-border pt-4">
-                <div class="text-xs uppercase font-bold text-neutral-400 tracking-wider">Active Counter Config</div>
+
+        <!-- ==================================================== -->
+        <!-- VIEW 2: ULTRA-MINIMALIST FULLSCREEN COUNTER -->
+        <!-- ==================================================== -->
+        <main id="singleView" onclick="handleCounterTap(event)" class="hidden fixed inset-0 w-full h-full flex flex-col justify-between p-6 sm:p-10 select-none cursor-pointer bg-black dark:bg-black light:bg-white text-white dark:text-white light:text-black overflow-hidden z-40 transition-colors duration-300">
+            
+            <!-- TOP MINIMAL HEADER (ONLY BACK BUTTON & SELECTOR) -->
+            <header onclick="event.stopPropagation()" class="w-full flex items-center justify-between z-50">
                 
-                <!-- Rename Input -->
+                <!-- BACK TO HUB BUTTON -->
+                <button onclick="showHubView()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-neutral-900/80 dark:bg-neutral-900/80 light:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-800 light:hover:bg-neutral-200 border border-white/10 dark:border-white/10 light:border-black/10 transition-all cursor-pointer text-xs font-semibold tracking-wide">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>Zurück</span>
+                </button>
+
+                <!-- COUNTER DROPDOWN SELECTOR -->
+                <select id="singleViewSelect" onchange="switchCounterFromSingle(this.value)" class="custom-select text-xs font-semibold py-2 pl-3.5 pr-8 rounded-xl border focus:outline-none cursor-pointer">
+                </select>
+
+            </header>
+
+            <!-- ULTRA-MINIMAL CENTER COUNTER DISPLAY (ONLY NAME AND NUMBER) -->
+            <div class="flex-1 flex flex-col items-center justify-center text-center my-auto pointer-events-none">
+                <!-- COUNTER NAME -->
+                <h2 id="singleCounterName" class="text-sm sm:text-base font-semibold tracking-[0.25em] uppercase text-neutral-400 dark:text-neutral-400 light:text-neutral-600 mb-6 font-pixel">
+                    Zähler
+                </h2>
+
+                <!-- MAIN NUMBER DISPLAY -->
+                <span id="singleCountDisplay" class="font-mono-num text-8xl sm:text-[12rem] font-extrabold tracking-tight text-white dark:text-white light:text-black transition-all drop-shadow-2xl">
+                    0
+                </span>
+            </div>
+
+            <!-- BOTTOM PIXEL ART ACCENT (PURE DECORATION) -->
+            <div class="w-full flex justify-center pointer-events-none opacity-20">
+                <svg class="w-6 h-6 pixel-art accent-text fill-current" viewBox="0 0 16 16">
+                    <path d="M7 0h2v2H7zM7 4h2v2H7zM7 8h2v2H7zM7 12h2v2H7z"/>
+                </svg>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- EDIT / CONFIG MODAL (FOR HUB EDITING) -->
+    <div id="editModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div onclick="event.stopPropagation()" class="bg-neutral-900 dark:bg-neutral-900 light:bg-white border border-white/10 dark:border-white/10 light:border-black/10 w-full max-w-md rounded-2xl p-6 shadow-2xl flex flex-col gap-6 text-sm text-neutral-100 dark:text-neutral-100 light:text-neutral-900">
+            
+            <div class="flex items-center justify-between pb-3 border-b border-white/10 dark:border-white/10 light:border-black/10">
+                <h3 class="font-bold text-sm tracking-wide font-pixel">Zähler Bearbeiten</h3>
+                <button onclick="closeEditModal()" class="p-1 text-neutral-400 hover:text-white dark:hover:text-white light:hover:text-black transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
                 <div>
-                    <label for="configTitleInput" class="block text-xs uppercase font-semibold text-dark-muted mb-1.5">Counter Name</label>
-                    <input 
-                        type="text" 
-                        id="configTitleInput" 
-                        placeholder="Counter Name..."
-                        class="w-full bg-dark-inner border border-dark-border text-dark-text rounded-xl px-3.5 py-2.5 focus:border-neutral-400 focus:outline-none text-sm transition-colors placeholder:text-neutral-500"
-                    />
+                    <label class="block text-xs font-semibold text-neutral-400 mb-1.5">Name</label>
+                    <input type="text" id="editNameInput" class="w-full bg-neutral-800 dark:bg-neutral-800 light:bg-neutral-100 border border-white/10 dark:border-white/10 light:border-black/10 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-blue-500">
                 </div>
 
-                <!-- Set Value Input -->
                 <div>
-                    <label for="configValueInput" class="block text-xs uppercase font-semibold text-dark-muted mb-1.5">Counter Value</label>
-                    <input 
-                        type="number" 
-                        id="configValueInput" 
-                        placeholder="0"
-                        class="w-full bg-dark-inner border border-dark-border text-dark-text rounded-xl px-3.5 py-2.5 focus:border-neutral-400 focus:outline-none text-sm font-mono transition-colors"
-                    />
+                    <label class="block text-xs font-semibold text-neutral-400 mb-1.5">Wert</label>
+                    <input type="number" id="editValueInput" class="w-full bg-neutral-800 dark:bg-neutral-800 light:bg-neutral-100 border border-white/10 dark:border-white/10 light:border-black/10 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-blue-500">
                 </div>
             </div>
 
-            <!-- SECTION 4: Action Controls -->
-            <div class="flex flex-col gap-2.5 pt-3 border-t border-dark-border">
-                <div class="grid grid-cols-2 gap-2.5">
-                    <!-- Reset Button -->
-                    <button 
-                        id="resetBtn" 
-                        type="button" 
-                        class="py-2.5 px-3 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/20 rounded-xl text-xs uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-1.5"
-                    >
-                        <i class="fa-solid fa-rotate-left"></i>
-                        Reset
-                    </button>
-
-                    <!-- Delete Button -->
-                    <button 
-                        id="deleteBtn" 
-                        type="button" 
-                        class="py-2.5 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl text-xs uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-1.5 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:bg-red-500/10"
-                    >
-                        <i class="fa-solid fa-trash-can"></i>
-                        Delete
-                    </button>
-                </div>
-
-                <!-- Done / Save Button -->
-                <button 
-                    id="saveConfigBtn" 
-                    type="button" 
-                    class="w-full mt-2 py-3 px-4 bg-white hover:bg-neutral-200 text-black rounded-xl text-xs uppercase font-bold tracking-wider transition-colors shadow-lg"
-                >
-                    Done
+            <div class="flex items-center gap-3 pt-2">
+                <button onclick="saveEditModal()" class="flex-1 py-2.5 bg-white light:bg-black text-black light:text-white font-bold rounded-xl text-xs hover:opacity-90 transition-opacity">
+                    Speichern
+                </button>
+                <button onclick="closeEditModal()" class="py-2.5 px-4 bg-neutral-800 dark:bg-neutral-800 light:bg-neutral-200 text-neutral-300 dark:text-neutral-300 light:text-neutral-700 font-semibold rounded-xl text-xs">
+                    Abbrechen
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Logic -->
+    <!-- JAVASCRIPT APP LOGIC -->
     <script>
-        // DOM Elements
-        const tapArea = document.getElementById('tapArea');
-        const displayTitle = document.getElementById('displayTitle');
-        const counterValue = document.getElementById('counterValue');
-        const openConfigBtn = document.getElementById('openConfigBtn');
-        const closeConfigBtn = document.getElementById('closeConfigBtn');
-        const configModal = document.getElementById('configModal');
-        
-        const counterSelect = document.getElementById('counterSelect');
-        const newCounterBtn = document.getElementById('newCounterBtn');
-        const newCounterForm = document.getElementById('newCounterForm');
-        const newCounterNameInput = document.getElementById('newCounterNameInput');
-        const cancelNewCounterBtn = document.getElementById('cancelNewCounterBtn');
-        const confirmNewCounterBtn = document.getElementById('confirmNewCounterBtn');
+        const COOKIE_COUNTERS = "px_counters_data";
+        const COOKIE_ACTIVE_ID = "px_active_id";
+        const COOKIE_THEME = "px_theme_mode";
+        const COOKIE_ACCENT = "px_accent_color";
+        const COOKIE_ACCENT_RGB = "px_accent_rgb";
 
-        const configTitleInput = document.getElementById('configTitleInput');
-        const configValueInput = document.getElementById('configValueInput');
-        const resetBtn = document.getElementById('resetBtn');
-        const deleteBtn = document.getElementById('deleteBtn');
-        const saveConfigBtn = document.getElementById('saveConfigBtn');
-
-        // State Management
-        // Schema: { "counter_id": { id: "...", name: "...", count: 0 } }
         let counters = {};
-        let activeCounterId = "";
-        let isModalOpen = false;
+        let activeId = "";
+        let currentTheme = "dark"; // 'dark' or 'light'
+        let editingCounterId = null;
 
-        // Cookie Helpers
+        // ACCENT PALETTES FOR ON-CLICK DYNAMIC SHIFT
+        const colorPalette = [
+            { hex: '#3b82f6', rgb: '59, 130, 246' },   // Blue
+            { hex: '#10b981', rgb: '16, 185, 129' },  // Emerald
+            { hex: '#ec4899', rgb: '236, 72, 153' },  // Pink
+            { hex: '#f59e0b', rgb: '245, 158, 11' },   // Amber
+            { hex: '#8b5cf6', rgb: '139, 92, 246' },  // Purple
+            { hex: '#ef4444', rgb: '239, 68, 68' }    // Red
+        ];
+        let colorIndex = 0;
+
+        // COOKIE HELPERS
         function setCookie(name, value, days = 365) {
-            const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            const expires = "; expires=" + date.toUTCString();
-            document.cookie = name + "=" + encodeURIComponent(value || "") + expires + "; path=/; SameSite=Lax";
+            const expires = new Date(Date.now() + days * 86400000).toUTCString();
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
         }
 
         function getCookie(name) {
-            const nameEQ = name + "=";
-            const ca = document.cookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) {
-                    return decodeURIComponent(c.substring(nameEQ.length, c.length));
-                }
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [k, v] = cookie.trim().split('=');
+                if (k === name) return decodeURIComponent(v || '');
             }
             return null;
         }
 
-        // Generate unique ID for counters
-        function generateId() {
-            return 'c_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+        // INITIALIZATION
+        function initApp() {
+            loadStateFromCookies();
+            applyTheme();
+            renderHubGrid();
+            renderSingleSelectOptions();
+            lucide.createIcons();
         }
 
-        // Initialize and Load multi-counter profile from cookies
-        function initCounters() {
-            const savedCountersRaw = getCookie('minimal_counters');
-            const savedActiveId = getCookie('active_counter_id');
-
-            if (savedCountersRaw) {
-                try {
-                    const parsed = JSON.parse(savedCountersRaw);
-                    // Standardize object structure (handling legacy 'value' vs 'count')
-                    Object.keys(parsed).forEach(k => {
-                        const item = parsed[k];
-                        counters[k] = {
-                            id: item.id || k,
-                            name: item.name || "Counter",
-                            count: typeof item.count === 'number' ? item.count : (typeof item.value === 'number' ? item.value : 0)
-                        };
-                    });
-                } catch (e) {
-                    counters = {};
-                }
+        function loadStateFromCookies() {
+            // Load Counters
+            const rawCounters = getCookie(COOKIE_COUNTERS);
+            if (rawCounters) {
+                try { counters = JSON.parse(rawCounters); } catch (e) { counters = {}; }
             }
 
-            // Create default counter if none exists
             if (Object.keys(counters).length === 0) {
-                const defaultId = generateId();
-                counters[defaultId] = {
-                    id: defaultId,
-                    name: "Main Counter",
-                    count: 0
-                };
-                activeCounterId = defaultId;
-            } else if (savedActiveId && counters[savedActiveId]) {
-                activeCounterId = savedActiveId;
-            } else {
-                activeCounterId = Object.keys(counters)[0];
+                const defaultId = 'c_' + Date.now();
+                counters[defaultId] = { id: defaultId, name: 'Main Counter', count: 0 };
             }
 
-            saveAllState();
-            updateMainUI(false);
+            const savedActiveId = getCookie(COOKIE_ACTIVE_ID);
+            activeId = (savedActiveId && counters[savedActiveId]) ? savedActiveId : Object.keys(counters)[0];
+
+            // Load Theme
+            currentTheme = getCookie(COOKIE_THEME) || 'dark';
+
+            // Load Accent Color
+            const savedAccent = getCookie(COOKIE_ACCENT) || '#3b82f6';
+            const savedRgb = getCookie(COOKIE_ACCENT_RGB) || '59, 130, 246';
+            setAccentColor(savedAccent, savedRgb, false);
         }
 
-        // Save state structure to cookies
         function saveAllState() {
-            setCookie('minimal_counters', JSON.stringify(counters));
-            setCookie('active_counter_id', activeCounterId);
+            setCookie(COOKIE_COUNTERS, JSON.stringify(counters));
+            setCookie(COOKIE_ACTIVE_ID, activeId);
+            setCookie(COOKIE_THEME, currentTheme);
         }
 
-        // Get Active Counter Object
-        function getActiveCounter() {
-            return counters[activeCounterId] || { name: "Counter", count: 0 };
-        }
-
-        // Refresh Main Single-Tap View UI
-        function updateMainUI(animate = true) {
-            const current = getActiveCounter();
-            displayTitle.textContent = current.name || "Counter";
-            counterValue.textContent = (current.count || 0).toLocaleString();
-
-            if (animate) {
-                counterValue.classList.remove('number-pop');
-                void counterValue.offsetWidth; // Force CSS reflow
-                counterValue.classList.add('number-pop');
+        // ACCENT COLOR & THEME MANAGERS
+        function setAccentColor(hex, rgb, save = true) {
+            document.documentElement.style.setProperty('--accent-color', hex);
+            document.documentElement.style.setProperty('--accent-rgb', rgb);
+            if (save) {
+                setCookie(COOKIE_ACCENT, hex);
+                setCookie(COOKIE_ACCENT_RGB, rgb);
             }
+        }
 
+        function cycleNextAccentColor() {
+            colorIndex = (colorIndex + 1) % colorPalette.length;
+            const col = colorPalette[colorIndex];
+            setAccentColor(col.hex, col.rgb, true);
+        }
+
+        function toggleThemeMode() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme();
             saveAllState();
         }
 
-        // Single Tap Increment Logic
-        function increment() {
-            if (isModalOpen) return;
-            if (!counters[activeCounterId]) return;
+        function applyTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
 
-            counters[activeCounterId].count++;
-            
-            // Visual feedback
-            tapArea.classList.add('tap-active');
-            setTimeout(() => tapArea.classList.remove('tap-active'), 100);
-
-            updateMainUI(true);
+            if (currentTheme === 'light') {
+                body.classList.remove('bg-[#080808]', 'text-neutral-100', 'dark');
+                body.classList.add('bg-neutral-50', 'text-neutral-900', 'light');
+                if (icon) icon.setAttribute('data-lucide', 'sun');
+            } else {
+                body.classList.remove('bg-neutral-50', 'text-neutral-900', 'light');
+                body.classList.add('bg-[#080808]', 'text-neutral-100', 'dark');
+                if (icon) icon.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
         }
 
-        // Populate Config Modal Controls & Options
-        function populateModalFields() {
-            const counterKeys = Object.keys(counters);
+        // HUB OVERVIEW RENDER
+        function renderHubGrid() {
+            const grid = document.getElementById('hubCountersGrid');
+            grid.innerHTML = '';
 
-            // Populate Dropdown
-            counterSelect.innerHTML = '';
-            counterKeys.forEach(key => {
-                const item = counters[key];
-                const option = document.createElement('option');
-                option.value = item.id;
-                option.textContent = `${item.name} (${item.count})`;
-                if (item.id === activeCounterId) {
-                    option.selected = true;
-                }
-                counterSelect.appendChild(option);
+            Object.values(counters).forEach((c, idx) => {
+                const isActive = c.id === activeId;
+                const card = document.createElement('div');
+                card.className = `group relative p-6 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+                    isActive 
+                        ? 'bg-neutral-900 dark:bg-neutral-900 light:bg-white border-blue-500/50 shadow-xl accent-glow' 
+                        : 'bg-neutral-900/40 dark:bg-neutral-900/40 light:bg-white border-white/5 dark:border-white/5 light:border-black/10 hover:border-white/20'
+                }`;
+
+                card.onclick = () => openFullscreenCounter(c.id);
+
+                // Pixel Icon choices based on index
+                const pixelIcons = [
+                    `<svg class="w-5 h-5 pixel-art text-amber-400 fill-current" viewBox="0 0 16 16"><path d="M7 0h2v2H7zM7 4h2v2H7zM7 8h2v2H7zM7 12h2v2H7z"/></svg>`,
+                    `<svg class="w-5 h-5 pixel-art text-rose-400 fill-current" viewBox="0 0 16 16"><path d="M2 3h4v2H2zM10 3h4v2h-4zM0 5h16v2H0zM2 9h12v2H2zM6 13h4v2H6z"/></svg>`,
+                    `<svg class="w-5 h-5 pixel-art text-emerald-400 fill-current" viewBox="0 0 16 16"><path d="M7 0h2v4H7zM3 4h10v2H3zM1 6h14v4H1zM5 12h6v4H5z"/></svg>`
+                ];
+                const selectedSvg = pixelIcons[idx % pixelIcons.length];
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            ${selectedSvg}
+                            <span class="text-xs font-bold tracking-wider uppercase text-neutral-300 dark:text-neutral-300 light:text-neutral-800 truncate max-w-[130px]">
+                                ${escapeHtml(c.name)}
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+                            <button onclick="openEditModal('${c.id}')" class="p-1 text-neutral-500 hover:text-white dark:hover:text-white light:hover:text-black transition-colors" title="Bearbeiten">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button onclick="resetCounter('${c.id}')" class="p-1 text-neutral-500 hover:text-amber-400 transition-colors" title="Auf 0 zurücksetzen">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            </button>
+                            ${Object.keys(counters).length > 1 ? `
+                            <button onclick="deleteCounter('${c.id}')" class="p-1 text-neutral-500 hover:text-red-400 transition-colors" title="Löschen">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="my-6">
+                        <span class="font-mono-num text-6xl font-extrabold text-white dark:text-white light:text-black tracking-tight">${c.count}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-neutral-500 pt-3 border-t border-white/5 dark:border-white/5 light:border-black/5">
+                        <span class="text-[11px] font-semibold text-neutral-400">Vollbild öffnen →</span>
+                        ${isActive ? '<span class="text-[9px] font-pixel text-emerald-400">AKTIV</span>' : ''}
+                    </div>
+                `;
+                grid.appendChild(card);
             });
-
-            // Populate Active Form Fields
-            const current = getActiveCounter();
-            configTitleInput.value = current.name;
-            configValueInput.value = current.count;
-
-            // Safety check: Cannot delete if only 1 counter exists
-            deleteBtn.disabled = counterKeys.length <= 1;
+            lucide.createIcons();
         }
 
-        // Open Config Modal
-        function openModal() {
-            isModalOpen = true;
-            newCounterForm.classList.add('hidden');
-            populateModalFields();
-
-            configModal.classList.remove('opacity-0', 'pointer-events-none');
-            configModal.classList.add('opacity-100');
+        // FULLSCREEN COUNTER VIEW LOGIC
+        function openFullscreenCounter(id) {
+            if (counters[id]) {
+                activeId = id;
+                saveAllState();
+            }
+            renderSingleCounterView();
+            document.getElementById('singleView').classList.remove('hidden');
         }
 
-        // Apply changes from form and Close Modal
-        function closeModal() {
-            syncFormToActiveCounter();
-
-            isModalOpen = false;
-            configModal.classList.remove('opacity-100');
-            configModal.classList.add('opacity-0', 'pointer-events-none');
-
-            updateMainUI(false);
+        function showHubView() {
+            document.getElementById('singleView').classList.add('hidden');
+            renderHubGrid();
         }
 
-        // Sync inputs to active counter object
-        function syncFormToActiveCounter() {
-            if (!counters[activeCounterId]) return;
+        function renderSingleCounterView() {
+            const current = counters[activeId];
+            if (!current) return;
 
-            const newTitle = configTitleInput.value.trim();
-            const newCount = parseInt(configValueInput.value, 10);
+            document.getElementById('singleCounterName').innerText = current.name;
+            document.getElementById('singleCountDisplay').innerText = current.count;
 
-            counters[activeCounterId].name = newTitle.length > 0 ? newTitle : "Counter";
-            counters[activeCounterId].count = isNaN(newCount) ? counters[activeCounterId].count : newCount;
+            renderSingleSelectOptions();
+        }
+
+        function renderSingleSelectOptions() {
+            const select = document.getElementById('singleViewSelect');
+            select.innerHTML = '';
+            Object.values(counters).forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `${c.name} (${c.count})`;
+                if (c.id === activeId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function switchCounterFromSingle(id) {
+            if (counters[id]) {
+                activeId = id;
+                saveAllState();
+                renderSingleCounterView();
+            }
+        }
+
+        function handleCounterTap(e) {
+            // Increment active counter
+            if (!counters[activeId]) return;
+            counters[activeId].count++;
+
+            // Cycle accent color dynamically on click
+            cycleNextAccentColor();
+
+            // Spring pop animation
+            const display = document.getElementById('singleCountDisplay');
+            display.classList.remove('animate-pop');
+            void display.offsetWidth;
+            display.classList.add('animate-pop');
 
             saveAllState();
+            renderSingleCounterView();
         }
 
-        // Switch active counter profile
-        function switchCounter(newId) {
-            if (counters[newId]) {
-                syncFormToActiveCounter(); // Save edits to current counter before switching
-                activeCounterId = newId;
-                populateModalFields();
-                updateMainUI(false);
-            }
+        // EDIT / MODAL ACTIONS
+        function openEditModal(id) {
+            editingCounterId = id;
+            const c = counters[id];
+            if (!c) return;
+
+            document.getElementById('editNameInput').value = c.name;
+            document.getElementById('editValueInput').value = c.count;
+            document.getElementById('editModal').classList.remove('hidden');
         }
 
-        // Reset current counter to 0
-        function resetCurrentCounter() {
-            if (counters[activeCounterId]) {
-                counters[activeCounterId].count = 0;
-                configValueInput.value = 0;
-                populateModalFields();
-                updateMainUI(true);
-            }
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            editingCounterId = null;
         }
 
-        // Delete current counter
-        function deleteCurrentCounter() {
-            const keys = Object.keys(counters);
-            if (keys.length <= 1) return;
+        function saveEditModal() {
+            if (!editingCounterId || !counters[editingCounterId]) return;
 
-            delete counters[activeCounterId];
-            activeCounterId = Object.keys(counters)[0]; // Fallback to remaining counter
+            const name = document.getElementById('editNameInput').value.trim();
+            const val = parseInt(document.getElementById('editValueInput').value, 10);
 
-            populateModalFields();
-            updateMainUI(true);
+            counters[editingCounterId].name = name || 'Counter';
+            counters[editingCounterId].count = isNaN(val) ? 0 : val;
+
+            saveAllState();
+            closeEditModal();
+            renderHubGrid();
         }
 
-        // Add new counter
-        function addNewCounter() {
-            const name = newCounterNameInput.value.trim() || "New Counter";
-            const newId = generateId();
-
-            counters[newId] = {
-                id: newId,
-                name: name,
-                count: 0
-            };
-
-            activeCounterId = newId;
-            newCounterNameInput.value = '';
-            newCounterForm.classList.add('hidden');
-
-            populateModalFields();
-            updateMainUI(false);
-        }
-
-        // Event Listeners
-        tapArea.addEventListener('click', increment);
-
-        openConfigBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openModal();
-        });
-
-        closeConfigBtn.addEventListener('click', closeModal);
-        saveConfigBtn.addEventListener('click', closeModal);
-
-        counterSelect.addEventListener('change', (e) => {
-            switchCounter(e.target.value);
-        });
-
-        // Toggle New Counter Form
-        newCounterBtn.addEventListener('click', () => {
-            newCounterForm.classList.remove('hidden');
-            newCounterNameInput.focus();
-        });
-
-        cancelNewCounterBtn.addEventListener('click', () => {
-            newCounterForm.classList.add('hidden');
-        });
-
-        confirmNewCounterBtn.addEventListener('click', addNewCounter);
-
-        newCounterNameInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addNewCounter();
-            }
-        });
-
-        resetBtn.addEventListener('click', resetCurrentCounter);
-        deleteBtn.addEventListener('click', deleteCurrentCounter);
-
-        // Auto-save active title/count edits on typing
-        configTitleInput.addEventListener('input', () => {
-            if (counters[activeCounterId]) {
-                counters[activeCounterId].name = configTitleInput.value.trim() || "Counter";
+        function openNewCounterPrompt() {
+            const name = prompt('Name für neuen Zähler:', 'Zähler');
+            if (name !== null) {
+                const newId = 'c_' + Date.now();
+                counters[newId] = { id: newId, name: name.trim() || 'Zähler', count: 0 };
+                activeId = newId;
                 saveAllState();
+                renderHubGrid();
             }
-        });
+        }
 
-        configValueInput.addEventListener('input', () => {
-            if (counters[activeCounterId]) {
-                const val = parseInt(configValueInput.value, 10);
-                counters[activeCounterId].count = isNaN(val) ? 0 : val;
+        function resetCounter(id) {
+            if (counters[id]) {
+                counters[id].count = 0;
                 saveAllState();
+                renderHubGrid();
             }
-        });
+        }
 
-        // Close modal when clicking backdrop
-        configModal.addEventListener('click', (e) => {
-            if (e.target === configModal) closeModal();
-        });
-
-        // Keyboard Shortcuts
-        document.addEventListener('keydown', (e) => {
-            // Toggle config modal with 'i'
-            if ((e.key === 'i' || e.key === 'I') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
-                if (e.repeat) return;
-                e.preventDefault();
-                if (isModalOpen) {
-                    closeModal();
-                } else {
-                    openModal();
-                }
-                return;
+        function deleteCounter(id) {
+            if (Object.keys(counters).length <= 1) return;
+            delete counters[id];
+            if (activeId === id) {
+                activeId = Object.keys(counters)[0];
             }
+            saveAllState();
+            renderHubGrid();
+        }
 
-            // Escape closes modal
-            if (e.key === 'Escape' && isModalOpen) {
-                closeModal();
-                return;
-            }
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
 
-            // Space / Enter increments active count when modal is closed
-            if (!isModalOpen && (e.key === ' ' || e.key === 'Enter')) {
-                e.preventDefault();
-                if (e.repeat) return;
-                increment();
-            }
-        });
-
-        // Initialize state on page load
-        window.addEventListener('DOMContentLoaded', initCounters);
+        // LAUNCH APP IN HUB OVERVIEW
+        window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
