@@ -23,18 +23,7 @@
 
             <!-- CONTROLS RIGHT -->
             <div class="flex items-center gap-2">
-                <!-- THEME SELECTOR -->
-                <select id="themeSelect" onchange="changeTheme(this.value)" class="bg-white/[0.05] border border-white/[0.1] text-xs font-semibold px-3 py-1.5 rounded-xl text-neutral-300 focus:outline-none cursor-pointer">
-                    <option value="classic" class="bg-[#121212]">Pixel Classic</option>
-                    <option value="old" class="bg-[#121212]">Pixel Old</option>
-                    <option value="dinos" class="bg-[#121212]">Dinos</option>
-                    <option value="humans" class="bg-[#121212]">Humans</option>
-                    <option value="cats" class="bg-[#121212]">Cats</option>
-                    <option value="symbols" class="bg-[#121212]">Symbols</option>
-                    <option value="dragons" class="bg-[#121212]">Dragons</option>
-                    <option value="anime" class="bg-[#121212]">Anime</option>
-                </select>
-
+                <!-- Themes entfernt: Pixel Classic ist fest eingestellt. -->
                 <!-- DARK / LIGHT MODE -->
                 <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-neutral-300 border border-white/[0.08] transition-all cursor-pointer" title="Dark / Light Mode">
                     <i id="themeIcon" data-lucide="moon" class="w-4 h-4"></i>

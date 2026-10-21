@@ -1,4 +1,4 @@
-// RAW SVG PIXEL ART MATRIX DEFINITIONS FOR ALL THEMES
+// Pixel-Art-Daten: Nur das Classic-Set bleibt aktiv.
 let PIXEL_ART_DATA = null;
 let PIXEL_MATRICES = {};
 const pixelSvgCache = new Map();
@@ -7,10 +7,7 @@ async function loadPixelArt() {
     try {
         PIXEL_ART_DATA = {
             "version": 1,
-            "spriteSize": [
-                16,
-                16
-            ],
+            "spriteSize": [16, 16],
             "palette": {
                 ".": "transparent",
                 "K": "#20212b",
@@ -27,860 +24,111 @@ async function loadPixelArt() {
             },
             "themes": {
                 "classic": [
-                {
-                    "name": "star",
-                    "pixels": [
-                    ".......Y........",
-                    "......YYY.......",
-                    "......YYY.......",
-                    "..BBBBYYYBBBB...",
-                    "...BBBBYBBB.....",
-                    "....BBBBYB......",
-                    ".....BBBB.......",
-                    "....BBBBBBB.....",
-                    "...BBBBBBBBB....",
-                    "..BBBBBBBBBBB...",
-                    "..BBB....BBB....",
-                    ".BB........BB...",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "coin",
-                    "pixels": [
-                    ".....GGGGGG.....",
-                    "...GGYYYYYYGG...",
-                    "..GYYYYYYYYYYG..",
-                    ".GYYYYYYYYYYYYG.",
-                    ".GYYYGGYYGGYYYG.",
-                    "GYYYGGYYGGYYYG..",
-                    "GYYYYYYGGYYYYYG.",
-                    "GYYYYYYGGYYYYYG.",
-                    "GYYYGGYYGGYYYG..",
-                    ".GYYYGGYYGGYYYG.",
-                    ".GYYYYYYYYYYYYG.",
-                    "..GYYYYYYYYYYG..",
-                    "...GGYYYYYYGG...",
-                    ".....GGGGGG.....",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "heart",
-                    "pixels": [
-                    "................",
-                    "..RRR....RRR....",
-                    ".RRRR..RRRR.....",
-                    ".RRRRRRRRRRRR...",
-                    "RRRRRRRRRRRRRR..",
-                    "RRRRRRRRRRRRRR..",
-                    "RRRRRRRRRRRRRR..",
-                    "RRRRRRRRRRRRRR..",
-                    "RRRRRRRRRRRRRR..",
-                    ".RRRRRRRRRRRR...",
-                    "..RRRRRRRRRR....",
-                    "...RRRRRRRR.....",
-                    "....RRRRRR......",
-                    ".....RRR........",
-                    "......R.........",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "gem",
-                    "pixels": [
-                    ".......C........",
-                    "......CCC.......",
-                    ".....CCCCC......",
-                    "....CCWWCCC.....",
-                    "...CCWWWWCCC....",
-                    "..CCWWWWWWCCC...",
-                    "..CCWWWWWWWWC...",
-                    "..CCWWWWWWWWC...",
-                    "..CCWWWWWWCCC...",
-                    "...CCWWWWCCC....",
-                    "....CCWWCCC.....",
-                    ".....CCCCC......",
-                    "......CCC.......",
-                    ".......C........",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "mushroom",
-                    "pixels": [
-                    ".....RRRRRR.....",
-                    "...RRRWWWWRRR...",
-                    "..RRWWWWWWWWRR..",
-                    ".RRWWRRWWRRWWRR.",
-                    "RRWWRRRRRRRRWWRR",
-                    "RRRRRRRRRRRRRRRR",
-                    "..BBBBBBBBBBBB..",
-                    "...BBKKBBBBKK...",
-                    "...BBKKBBBBKK...",
-                    "....BBBBBBBB....",
-                    ".....BBBBBB.....",
-                    ".....BB..BB.....",
-                    ".....BB..BB.....",
-                    "....BBBBBBBB....",
-                    "................",
-                    "................"
-                    ]
-                }
-                ],
-                "old": [
-                {
-                    "name": "gameboy",
-                    "pixels": [
-                    "....KKKKKKKK....",
-                    "...KGGGGGGGGK...",
-                    "..KGGGGGGGGGGK..",
-                    ".KGGGKKKKKKGGGK.",
-                    ".KGGKGGGGGGKGGK.",
-                    "KGGKGGKKKKGGKGGK",
-                    "KGGKGGKGGKGGKGGK",
-                    "KGGKGGKKKKGGKGGK",
-                    "KGGKGGGGGGGGKGGK",
-                    "KGGKKKKKKKKKKGGK",
-                    "KGGGGGGGGGGGGGGK",
-                    ".KKKKKKKKKKKKKK.",
-                    "..KGGGGGGGGGGK..",
-                    "...KKKKKKKKKK...",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "skull",
-                    "pixels": [
-                    ".....WWWWWW.....",
-                    "...WWWWWWWWWW...",
-                    "..WWWKKWWKKWWW..",
-                    ".WWWKKKWWKKKWWW.",
-                    "WWWWWWWWWWWWWWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    ".WWWWWWWWWWWWWW.",
-                    "..WWWWWWWWWW....",
-                    "...WWW..WWW.....",
-                    "..KKK....KKK....",
-                    "..KKK....KKK....",
-                    "...KKKKKKKK.....",
-                    "....KKKKKK......",
-                    ".....KKKK.......",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "trophy",
-                    "pixels": [
-                    ".....YYYYYY.....",
-                    "....YYWWWWYY....",
-                    "....YYWWWWYY....",
-                    "....YYYYYYYY....",
-                    ".....YYYYYY.....",
-                    "......YYYY......",
-                    "......YYYY......",
-                    ".....KKKKKK.....",
-                    "....KKKKKKKK....",
-                    "...KKYYYYKKK....",
-                    "..KKYYYYYYKK....",
-                    "..KKYYYYYYKK....",
-                    "...KKYYYYKK.....",
-                    "....KKKKKK......",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "robot",
-                    "pixels": [
-                    "....CCCCCCCC....",
-                    "...CCCCCCCCCC...",
-                    "..CCKKKKKKKKCC..",
-                    ".CCKKWWKKWWKKCC.",
-                    ".CCKKWWKKWWKKCC.",
-                    "CCKKKKKKKKKKKKCC",
-                    "CCKKKCCCCCCKKKCC",
-                    "CCKKCCCCCCCCKKCC",
-                    "CCKKKKKKKKKKKKCC",
-                    ".CCKKKKKKKKKKCC.",
-                    "..CCCCCCCCCCCC..",
-                    "....CC....CC....",
-                    "....CC....CC....",
-                    "...CCCC..CCCC...",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "ghost",
-                    "pixels": [
-                    ".....WWWWWW.....",
-                    "...WWWWWWWWWW...",
-                    "..WWWWWWWWWWWW..",
-                    ".WWWKKWWWWKKWWW.",
-                    "WWWKKKWWWWKKKWWW",
-                    "WWWKKKKWWKKKKWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    ".WWWWWWWWWWWWWW.",
-                    "..WWWWWWWWWWWW..",
-                    "...WWWW..WWWW...",
-                    "................",
-                    "................"
-                    ]
-                }
-                ],
-                "dinos": [
-                {
-                    "name": "t-rex",
-                    "pixels": [
-                    "........GGGG....",
-                    ".......GGGGGG...",
-                    "......GGGGGGGG..",
-                    "......GGGWWGGG..",
-                    "......GGGKKGGG..",
-                    "GG....GGGGGGGG..",
-                    "GGG..GGGGGGGGG..",
-                    ".GGGGGGGGGGGGGG.",
-                    "..GGGGGGGGGGGGG.",
-                    "...GGGGGGGGGG...",
-                    "....GGGGGG......",
-                    "...GGG..GGG.....",
-                    "..GGGG..GGGG....",
-                    "..GG....GG......",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "stegosaurus",
-                    "pixels": [
-                    "......GGG.......",
-                    ".....GGGGG......",
-                    "...GGGGGGGGG....",
-                    "..GGGGGGGGGGGG..",
-                    ".GGGGGGGGGGGGGGG",
-                    "GGGGGGGGGGGGGGGG",
-                    "GGGGGGGGGGGGGGGG",
-                    "..GGGGGGGGGGGG..",
-                    "...GGGGGGGGGG...",
-                    "....GGGGGGGG....",
-                    "....GGG..GGG....",
-                    "...GGG....GGG...",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "egg",
-                    "pixels": [
-                    "......WWWW......",
-                    ".....WWWWWW.....",
-                    "....WWWWWWWW....",
-                    "...WWWWWWWWWW...",
-                    "..WWWWWWWWWWWW..",
-                    "..WWWWGGGGWWWW..",
-                    ".WWWWGGGGGGWWWW.",
-                    ".WWWWGGGGGGWWWW.",
-                    "..WWWWGGGGWWWW..",
-                    "..WWWWWWWWWWWW..",
-                    "...WWWWWWWWWW...",
-                    "....WWWWWWWW....",
-                    ".....WWWWWW.....",
-                    "......WWWW......",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "ptero",
-                    "pixels": [
-                    ".....GG....GG...",
-                    "...GGGGG..GGGG..",
-                    "..GGGGGGGGGGGG..",
-                    ".GGGGGGGGGGGGGGG",
-                    "GGGGGGGGGGGGGGGG",
-                    "..GGGGGGGGGGGG..",
-                    "...GGGGGGGGGG...",
-                    "....GGGGGGGG....",
-                    ".....GGGGGG.....",
-                    "......GGGG......",
-                    ".....GG..GG.....",
-                    "....GG....GG....",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "fossil",
-                    "pixels": [
-                    "......YYYY......",
-                    ".....YYYYYY.....",
-                    "....YYKKKKYY....",
-                    "...YYKYYYYKYY...",
-                    "..YYKYYKKYYKYY..",
-                    ".YYKYYKYYKYYKYY.",
-                    "YYKYYKYYYYKYYKYY",
-                    "YYKYYKYYYYKYYKYY",
-                    ".YYKYYKYYKYYKYY.",
-                    "..YYKYYKKYYKYY..",
-                    "...YYKYYYYKYY...",
-                    "....YYKKKKYY....",
-                    ".....YYYYYY.....",
-                    "......YYYY......",
-                    "................",
-                    "................"
-                    ]
-                }
-                ],
-                "humans": [
-                {
-                    "name": "knight",
-                    "pixels": [
-                    ".....SSSSSS.....",
-                    "....SSSSSSSS....",
-                    "....SSKKKKSS....",
-                    "....SSKWWKSS....",
-                    "....SSKKKKSS....",
-                    ".....SSSSSS.....",
-                    "...BBBBBBBBBB...",
-                    "..BBBBRRBBBBBB..",
-                    "..BBB..RR..BBB..",
-                    "..BBB..RR..BBB..",
-                    ".....RRRRRR.....",
-                    ".....RR..RR.....",
-                    ".....RR..RR.....",
-                    "....RR....RR....",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "wizard",
-                    "pixels": [
-                    "......PPPP......",
-                    ".....PPPPPP.....",
-                    "....PPPPPPPP....",
-                    "...PPPPPPPPPP...",
-                    "......SSSS......",
-                    ".....SSWWSS.....",
-                    ".....SSKKSS.....",
-                    "......SSSS......",
-                    "....BBBBBBBB....",
-                    "...BBBBBBBBBB...",
-                    "..BBBYBBBBYBBB..",
-                    "....BB....BB....",
-                    "....BB....BB....",
-                    "...BBB....BBB...",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "pirate",
-                    "pixels": [
-                    ".....KKKKKK.....",
-                    "...KKKKKKKKKK...",
-                    "..KKKKKKKKKKKK..",
-                    "..KKWWWWWWWWKK..",
-                    "...WWWWWWWWWW...",
-                    "....SSSSSSSS....",
-                    "....SSKSSKSS....",
-                    "....SSSSSSSS....",
-                    "...SSSSRRSSSS...",
-                    "...SSSSSSSSSS...",
-                    "....SSSSSSSS....",
-                    ".....SS..SS.....",
-                    "....SS....SS....",
-                    "...SS......SS...",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "scientist",
-                    "pixels": [
-                    ".....WWWWWW.....",
-                    "....WWWWWWWW....",
-                    "....WWKKKKWW....",
-                    "....WWKWWKWW....",
-                    "....WWKKKKWW....",
-                    ".....WWWWWW.....",
-                    "...CCCCCCCCCC...",
-                    "..CCWWCCCCWWCC..",
-                    "..CCWWCCCCWWCC..",
-                    "..CCCCCCCCCCCC..",
-                    "...CC..CC..CC...",
-                    "...CC..CC..CC...",
-                    "..CC...CC...CC..",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "farmer",
-                    "pixels": [
-                    ".....YYYYYY.....",
-                    "....YYYYYYYY....",
-                    "...YYYYYYYYYY...",
-                    "..YYYYYYYYYYYY..",
-                    "..YYYYYYYYYYYY..",
-                    "....SSSSSSSS....",
-                    "....SSKSSKSS....",
-                    "....SSSSSSSS....",
-                    "...SSSSSSSSSS...",
-                    "...SSGGGGSSSS...",
-                    "....SSGGGGSS....",
-                    ".....SS..SS.....",
-                    "....SS....SS....",
-                    "...SS......SS...",
-                    "................",
-                    "................"
-                    ]
-                }
-                ],
-                "cats": [
-                {
-                    "name": "orange cat",
-                    "pixels": [
-                    "..OO......OO....",
-                    ".OOO......OOO...",
-                    ".OOOO....OOOO...",
-                    "..OOOOOOOOOO....",
-                    "..OOOKKKKOOO....",
-                    "..OOOKWWKOOO....",
-                    "..OOOKKKKOOO....",
-                    "..OOOOOOOOOO....",
-                    "...OOORROOO.....",
-                    "....OOOOOO......",
-                    "...OO....OO.....",
-                    "..OOO....OOO....",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "black cat",
-                    "pixels": [
-                    "..KK......KK....",
-                    ".KKK......KKK...",
-                    ".KKKK....KKKK...",
-                    "..KKKKKKKKKK....",
-                    "..KKKWWKKWWK....",
-                    "..KKKKKKKKKK....",
-                    "...KKKRRKKK.....",
-                    "....KKKKKK......",
-                    "...KK....KK.....",
-                    "..KKK....KKK....",
-                    "................",
-                    "................",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "sleepy cat",
-                    "pixels": [
-                    "..KK......KK....",
-                    ".KKK......KKK...",
-                    ".KKKK....KKKK...",
-                    "..KKKKKKKKKK....",
-                    "..KKKKKKKKKK....",
-                    "..KKK~~~~KKK....",
-                    "..KKKKKKKKKK....",
-                    "...KKKKKKKK.....",
-                    "....KKKKKK......",
-                    "...KK....KK.....",
-                    "..KKK....KKK....",
-                    "................",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "calico",
-                    "pixels": [
-                    "..OO......WW....",
-                    ".OOO......WWW...",
-                    ".OOOO....WWWW...",
-                    "..OOOOOOOOOO....",
-                    "..OOOKKKKOOO....",
-                    "..OOOKWWKOOO....",
-                    "..OOOKKKKOOO....",
-                    "..WWWWOOOOOO....",
-                    "...WWWRROOO.....",
-                    "....OOOOOO......",
-                    "...OO....OO.....",
-                    "..OOO....OOO....",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "pixel paw",
-                    "pixels": [
-                    "....OO....OO....",
-                    "...OOOO..OOOO...",
-                    "...OOOO..OOOO...",
-                    "....OO....OO....",
-                    "................",
-                    "..KKKKKKKKKKKK..",
-                    ".KKKKKKKKKKKKKK.",
-                    "KKKKKKKKKKKKKKKK",
-                    "KKKKKKKKKKKKKKKK",
-                    ".KKKKKKKKKKKKKK.",
-                    "..KKKKKKKKKKKK..",
-                    "...KKKKKKKKKK...",
-                    "....KKKKKKKK....",
-                    ".....KKKKKK.....",
-                    "................",
-                    "................"
-                    ]
-                }
-                ],
-                "symbols": [
-                {
-                    "name": "heart",
-                    "pixels": [
-                    "....RRRR..RRRR..",
-                    "..RRRRRRRRRRRR..",
-                    ".RRRRRRRRRRRRRR.",
-                    "RRRRRRRRRRRRRRRR",
-                    "RRRRRRRRRRRRRRRR",
-                    "RRRRRRRRRRRRRRRR",
-                    ".RRRRRRRRRRRRRR.",
-                    "..RRRRRRRRRRRR..",
-                    "...RRRRRRRRRR...",
-                    "....RRRRRRRR....",
-                    ".....RRRRRR.....",
-                    "......RRRR......",
-                    ".......RR.......",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "lightning",
-                    "pixels": [
-                    "........YY......",
-                    ".......YYY......",
-                    "......YYY.......",
-                    ".....YYY........",
-                    "....YYYYYYYYYY..",
-                    "...YYYYYYYYYY...",
-                    "........YYY.....",
-                    ".......YYY......",
-                    "......YYY.......",
-                    ".....YYY........",
-                    "....YYY.........",
-                    "...YY...........",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "skull",
-                    "pixels": [
-                    ".....WWWWWW.....",
-                    "...WWWWWWWWWW...",
-                    "..WWWKKWWKKWWW..",
-                    ".WWWKKKWWKKKWWW.",
-                    "WWWWWWWWWWWWWWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    "WWWWWWWWWWWWWWWW",
-                    ".WWWWWWWWWWWWWW.",
-                    "..WWWWWWWWWW....",
-                    "...WWW..WWW.....",
-                    "..KKK....KKK....",
-                    "..KKK....KKK....",
-                    "...KKKKKKKK.....",
-                    "....KKKKKK......",
-                    ".....KKKK.......",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "crown",
-                    "pixels": [
-                    "....YYYYYYYY....",
-                    "...YYYYYYYYYY...",
-                    "..YY..YYYY..YY..",
-                    ".YY...YYYY...YY.",
-                    "YY....YYYY....YY",
-                    "YY....YYYY....YY",
-                    "YYYYYYYYYYYYYYYY",
-                    "YYYYYYYYYYYYYYYY",
-                    ".YYYYYYYYYYYYYY.",
-                    "..YYYYYYYYYYYY..",
-                    "...YYYYYYYYYY...",
-                    "....YYYYYYYY....",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "gem",
-                    "pixels": [
-                    ".......C........",
-                    "......CCC.......",
-                    ".....CCCCC......",
-                    "....CCWWCCC.....",
-                    "...CCWWWWCCC....",
-                    "..CCWWWWWWCCC...",
-                    "..CCWWWWWWWWC...",
-                    "..CCWWWWWWWWC...",
-                    "..CCWWWWWWCCC...",
-                    "...CCWWWWCCC....",
-                    "....CCWWCCC.....",
-                    ".....CCCCC......",
-                    "......CCC.......",
-                    ".......C........",
-                    "................",
-                    "................"
-                    ]
-                }
-                ],
-                "dragons": [
-                {
-                    "name": "dragon head",
-                    "pixels": [
-                    ".....GGGGGG.....",
-                    "...GGGGGGGGGG...",
-                    "..GGGGGGGGGGGG..",
-                    ".GGGGGGGGGGGGGG.",
-                    "GGGWWGGGGWWGGGGG",
-                    "GGGWWGGGGWWGGGGG",
-                    "GGGGGGKKKKGGGGGG",
-                    "GGGGGGGGGGGGGGGG",
-                    ".GGGGGGGGGGGGGG.",
-                    "..GGGGGGGGGG....",
-                    "...GGGGGGGG.....",
-                    "....GG..GG......",
-                    "...GG....GG.....",
-                    "..GG......GG....",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "fire",
-                    "pixels": [
-                    "......RR........",
-                    ".....RRR........",
-                    "....RYYYR.......",
-                    "...RYYYYYR......",
-                    "..RYYYYYYYR.....",
-                    "..RYYYYYYYR.....",
-                    ".RYYYYYYYYYR....",
-                    "..RYYYYYYYR.....",
-                    "...RYYYYYR......",
-                    "....RYYYR.......",
-                    ".....RRR........",
-                    "......R.........",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "egg",
-                    "pixels": [
-                    "......WWWW......",
-                    ".....WWWWWW.....",
-                    "....WWWWWWWW....",
-                    "...WWWWWWWWWW...",
-                    "..WWWWWWWWWWWW..",
-                    "..WWWWGGGGWWWW..",
-                    ".WWWWGGGGGGWWWW.",
-                    ".WWWWGGGGGGWWWW.",
-                    "..WWWWGGGGWWWW..",
-                    "..WWWWWWWWWWWW..",
-                    "...WWWWWWWWWW...",
-                    "....WWWWWWWW....",
-                    ".....WWWWWW.....",
-                    "......WWWW......",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "wing",
-                    "pixels": [
-                    "...GGG......GGG.",
-                    "..GGGGG....GGGGG",
-                    ".GGGGGGG..GGGGGG",
-                    "GGGGGGGGGGGGGGGG",
-                    "GGGGGGGGGGGGGGGG",
-                    ".GGGGGGGGGGGGGGG",
-                    "..GGGGGGGGGGGGGG",
-                    "...GGGGGGGGGGGG.",
-                    "....GGGGGGGGGG..",
-                    ".....GGGGGGGG...",
-                    "......GGGGGG....",
-                    ".......GGGG.....",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "claw",
-                    "pixels": [
-                    "....WW......WW..",
-                    "....WW......WW..",
-                    ".....WW....WW...",
-                    "......WW..WW....",
-                    ".......WWWW.....",
-                    "........WW......",
-                    ".......WWWW.....",
-                    "......WW..WW....",
-                    ".....WW....WW...",
-                    "....WW......WW..",
-                    "...WW........WW.",
-                    "..WW..........WW",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                }
-                ],
-                "anime": [
-                {
-                    "name": "hero face",
-                    "pixels": [
-                    "....BBBBBBBB....",
-                    "..BBBBBBBBBBBB..",
-                    ".BBBBBBBBBBBBBB.",
-                    "BBBBBWWBBBBWWBBB",
-                    "BBBBBWWBBBBWWBBB",
-                    "BBBBBBBBBBBBBBBB",
-                    "BBBBBRRRRRRBBBBB",
-                    "BBBBBBBBBBBBBBBB",
-                    ".BBBBBBBBBBBBBB.",
-                    "..BBBBBBBBBBBB..",
-                    "...BBBBBBBBBB...",
-                    "....BB....BB....",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "magic wand",
-                    "pixels": [
-                    "........YY......",
-                    ".......YYYY.....",
-                    "......YYYYYY....",
-                    ".......YYYY.....",
-                    "........YY......",
-                    ".........BB.....",
-                    "..........BB....",
-                    "...........BB...",
-                    "............BB..",
-                    ".............BB.",
-                    "..............BB",
-                    "...............B",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "sword",
-                    "pixels": [
-                    "........SS......",
-                    ".......SSSS.....",
-                    "......SSSS......",
-                    ".....SSSS.......",
-                    "....SSSS........",
-                    "...SSSS.........",
-                    "..SSSS..........",
-                    ".SSSS...........",
-                    "SSSS............",
-                    "..KKKK..........",
-                    "...KKKK.........",
-                    "....KK..........",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "star",
-                    "pixels": [
-                    ".......Y........",
-                    "......YYY.......",
-                    "......YYY.......",
-                    "..BBBBYYYBBBB...",
-                    "...BBBBYBBB.....",
-                    "....BBBBYB......",
-                    ".....BBBB.......",
-                    "....BBBBBBB.....",
-                    "...BBBBBBBBB....",
-                    "..BBBBBBBBBBB...",
-                    "..BBB....BBB....",
-                    ".BB........BB...",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                },
-                {
-                    "name": "mask",
-                    "pixels": [
-                    "..KKKKKKKKKK....",
-                    "..KBBBBBBBBK....",
-                    ".KKBBBBBBBBKK...",
-                    "KKKBBWWBBWWBKKK.",
-                    "KKKBBWWBBWWBKKK.",
-                    "KKKBBBBBBBBBKKK.",
-                    "..KKKKRRKKKK....",
-                    "...KKKKKKKK.....",
-                    "....KKKKKK......",
-                    ".....KKKK.......",
-                    "......KK........",
-                    "................",
-                    "................",
-                    "................",
-                    "................",
-                    "................"
-                    ]
-                }
+                    {
+                        "name": "star",
+                        "pixels": [
+                            ".......Y........",
+                            "......YYY.......",
+                            "......YYY.......",
+                            "..BBBBYYYBBBB...",
+                            "...BBBBYBBB.....",
+                            "....BBBBYB......",
+                            ".....BBBB.......",
+                            "....BBBBBBB.....",
+                            "...BBBBBBBBB....",
+                            "..BBBBBBBBBBB...",
+                            "..BBB....BBB....",
+                            ".BB........BB...",
+                            "................",
+                            "................",
+                            "................",
+                            "................"
+                        ]
+                    },
+                    {
+                        "name": "coin",
+                        "pixels": [
+                            ".....GGGGGG.....",
+                            "...GGYYYYYYGG...",
+                            "..GYYYYYYYYYYG..",
+                            ".GYYYYYYYYYYYYG.",
+                            ".GYYYGGYYGGYYYG.",
+                            "GYYYGGYYGGYYYG..",
+                            "GYYYYYYGGYYYYYG.",
+                            "GYYYYYYGGYYYYYG.",
+                            "GYYYGGYYGGYYYG..",
+                            ".GYYYGGYYGGYYYG.",
+                            ".GYYYYYYYYYYYYG.",
+                            "..GYYYYYYYYYYG..",
+                            "...GGYYYYYYGG...",
+                            ".....GGGGGG.....",
+                            "................",
+                            "................"
+                        ]
+                    },
+                    {
+                        "name": "heart",
+                        "pixels": [
+                            "................",
+                            "..RRR....RRR....",
+                            ".RRRR..RRRR.....",
+                            ".RRRRRRRRRRRR...",
+                            "RRRRRRRRRRRRRR..",
+                            "RRRRRRRRRRRRRR..",
+                            "RRRRRRRRRRRRRR..",
+                            "RRRRRRRRRRRRRR..",
+                            "RRRRRRRRRRRRRR..",
+                            ".RRRRRRRRRRRR...",
+                            "..RRRRRRRRRR....",
+                            "...RRRRRRRR.....",
+                            "....RRRRRR......",
+                            ".....RRR........",
+                            "......R.........",
+                            "................"
+                        ]
+                    },
+                    {
+                        "name": "gem",
+                        "pixels": [
+                            ".......C........",
+                            "......CCC.......",
+                            ".....CCCCC......",
+                            "....CCWWCCC.....",
+                            "...CCWWWWCCC....",
+                            "..CCWWWWWWCCC...",
+                            "..CCWWWWWWWWC...",
+                            "..CCWWWWWWWWC...",
+                            "..CCWWWWWWCCC...",
+                            "...CCWWWWCCC....",
+                            "....CCWWCCC.....",
+                            ".....CCCCC......",
+                            "......CCC.......",
+                            ".......C........",
+                            "................",
+                            "................"
+                        ]
+                    },
+                    {
+                        "name": "mushroom",
+                        "pixels": [
+                            ".....RRRRRR.....",
+                            "...RRRWWWWRRR...",
+                            "..RRWWWWWWWWRR..",
+                            ".RRWWRRWWRRWWRR.",
+                            "RRWWRRRRRRRRWWRR",
+                            "RRRRRRRRRRRRRRRR",
+                            "..BBBBBBBBBBBB..",
+                            "...BBKKBBBBKK...",
+                            "...BBKKBBBBKK...",
+                            "....BBBBBBBB....",
+                            ".....BBBBBB.....",
+                            ".....BB..BB.....",
+                            ".....BB..BB.....",
+                            "....BBBBBBBB....",
+                            "................",
+                            "................"
+                        ]
+                    }
                 ]
             }
         };
@@ -934,7 +182,6 @@ let selectedColor = PALETTE[0];
 let selectedPixelIdx = 0;
 
 let primaryColor = '#3b82f6';
-let currentTheme = "classic";
 let isDarkMode = true;
 let particlesEnabled = true;
 let soundEnabled = true;
@@ -944,11 +191,10 @@ let stats = {
     pageLoads: 0,
     createdCounters: 0,
     deletedCounters: 0,
-    themeChanges: 0,
     autoTriggersExecuted: 0
 };
 
-// JSON sprite data supports transparent pixels and per-pixel colors.
+// Erstellt ein SVG aus einer Pixel-Matrix.
 function getPixelSVG(matrix, color = "#ffffff", size = 24) {
     const paletteMap = PIXEL_ART_DATA?.palette || {};
     const key = `${matrix.join("|")}:${color}:${size}`;
@@ -985,51 +231,65 @@ function getPixelSVG(matrix, color = "#ffffff", size = 24) {
 }
 
 function getCounterPixelSVG(pixelIdx, color = "#ffffff", size = 24) {
-    const themeMatrices =
-        PIXEL_MATRICES[currentTheme] || PIXEL_MATRICES.classic;
+    const classicMatrices = PIXEL_MATRICES.classic || [];
+    if (classicMatrices.length === 0) return "";
 
-    return getPixelSVG(
-        themeMatrices[pixelIdx % themeMatrices.length],
-        color,
-        size
-    );
+    const numericIndex = Number.isFinite(Number(pixelIdx))
+        ? Math.trunc(Number(pixelIdx))
+        : 0;
+    const safeIndex = Math.abs(numericIndex) % classicMatrices.length;
+
+    return getPixelSVG(classicMatrices[safeIndex], color, size);
 }
 
-// STORAGE MANAGEMENT
+// SPEICHERVERWALTUNG
 function setStorage(key, value) {
     const str = JSON.stringify(value);
-    const expires = new Date(
-        Date.now() + 365 * 86400000
-    ).toUTCString();
 
-    document.cookie =
-        `${key}=${encodeURIComponent(str)}; expires=${expires}; path=/; SameSite=Lax`;
-
+    // localStorage bevorzugen, weil Cookies sehr wenig Speicherplatz haben.
     try {
         localStorage.setItem(key, str);
-    } catch (e) {}
-}
-
-function getStorage(key) {
-    const cookies = document.cookie.split(';');
-
-    for (let cookie of cookies) {
-        const [k, v] = cookie.trim().split('=');
-
-        if (k === key) {
-            try {
-                return JSON.parse(decodeURIComponent(v));
-            } catch (e) {}
-        }
+        return;
+    } catch (e) {
+        // Cookies nur als Ersatz verwenden, wenn localStorage nicht verfügbar ist.
     }
 
     try {
+        const expires = new Date(
+            Date.now() + 365 * 86400000
+        ).toUTCString();
+
+        document.cookie =
+            `${key}=${encodeURIComponent(str)}; expires=${expires}; path=/; SameSite=Lax`;
+    } catch (e) {
+        console.error(`Speichern von "${key}" fehlgeschlagen.`, e);
+    }
+}
+
+function getStorage(key) {
+    // localStorage zuerst lesen, damit alte Cookies keine neuen Daten überschreiben.
+    try {
         const ls = localStorage.getItem(key);
 
-        if (ls) {
+        if (ls !== null) {
             return JSON.parse(ls);
         }
     } catch (e) {}
+
+    // Rückfall auf Cookies für Daten älterer Versionen.
+    const prefix = `${key}=`;
+    const cookie = document.cookie
+        .split(';')
+        .map(part => part.trim())
+        .find(part => part.startsWith(prefix));
+
+    if (cookie) {
+        const value = cookie.slice(prefix.length);
+
+        try {
+            return JSON.parse(decodeURIComponent(value));
+        } catch (e) {}
+    }
 
     return null;
 }
@@ -1054,7 +314,6 @@ function initApp() {
 function loadData() {
     counters = getStorage('ce_counters') || {};
     activeId = getStorage('ce_active_id') || "";
-    currentTheme = getStorage('ce_theme') || "classic";
     primaryColor = getStorage('ce_primary_color') || "#3b82f6";
     isDarkMode = getStorage('ce_darkmode') !== false;
     stats = getStorage('ce_stats') || stats;
@@ -1082,15 +341,16 @@ function loadData() {
         activeId = Object.keys(counters)[0];
     }
 
-    document.getElementById('themeSelect').value = currentTheme;
-    document.getElementById('particleToggle').checked = particlesEnabled;
-    document.getElementById('soundToggle').checked = soundEnabled;
+    const particleToggle = document.getElementById('particleToggle');
+    if (particleToggle) particleToggle.checked = particlesEnabled;
+
+    const soundToggle = document.getElementById('soundToggle');
+    if (soundToggle) soundToggle.checked = soundEnabled;
 }
 
 function saveData() {
     setStorage('ce_counters', counters);
     setStorage('ce_active_id', activeId);
-    setStorage('ce_theme', currentTheme);
     setStorage('ce_primary_color', primaryColor);
     setStorage('ce_darkmode', isDarkMode);
     setStorage('ce_stats', stats);
@@ -1098,7 +358,7 @@ function saveData() {
     setStorage('ce_sound', soundEnabled);
 }
 
-// TIME CALCULATIONS FOR OFFLINE BACKGROUND PROGRESSION
+// ZEITBASIERTE ZÄHLER
 function recalculateTimeBasedCounters() {
     const now = Date.now();
     let updated = false;
@@ -1180,7 +440,6 @@ function renderUI() {
     const activeCounter = counters[activeId];
     if (!activeCounter) return;
 
-    // Single View
     document.getElementById('activeCounterName').innerText =
         activeCounter.name;
 
@@ -1191,11 +450,7 @@ function renderUI() {
         activeCounter.count;
 
     document.getElementById('activeCounterPixel').innerHTML =
-        getCounterPixelSVG(
-            activeCounter.pixelIdx || 0,
-            activeCounter.color || primaryColor,
-            64
-        );
+        getCounterSymbol(activeCounter, 64);
 
     const triggerBadge = document.getElementById('activeTriggerBadge');
 
@@ -1239,7 +494,7 @@ function renderHubGrid() {
         card.innerHTML = `
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-7 h-7 flex items-center justify-center">${getCounterPixelSVG(c.pixelIdx || 0, c.color || primaryColor, 28)}</div>
+                    <div class="w-7 h-7 flex items-center justify-center">${getCounterSymbol(c, 28)}</div>
                     <span class="text-xs font-bold uppercase tracking-wider truncate max-w-[120px]" style="color: ${c.color || primaryColor}">${escapeHtml(c.name)}</span>
                 </div>
                 <div class="flex items-center gap-1">
@@ -1281,7 +536,6 @@ function renderStats() {
         <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Seitenaufrufe:</span> <strong class="text-white font-mono">${stats.pageLoads || 0}</strong></div>
         <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Erstellte Zähler:</span> <strong class="text-white font-mono">${stats.createdCounters || 0}</strong></div>
         <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Gelöschte Zähler:</span> <strong class="text-white font-mono">${stats.deletedCounters || 0}</strong></div>
-        <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Theme Wechsel:</span> <strong class="text-white font-mono">${stats.themeChanges || 0}</strong></div>
         <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"><span class="text-neutral-500 block">Auto-Triggers:</span> <strong class="text-white font-mono">${stats.autoTriggersExecuted || 0}</strong></div>
     `;
 }
@@ -1354,7 +608,7 @@ function openEditModal(id) {
     selectedColor = c.color || primaryColor;
     selectedPixelIdx = c.pixelIdx || 0;
 
-    // Render Color Picker
+    // Farbauswahl erstellen.
     const colorContainer = document.getElementById('colorPickerList');
     colorContainer.innerHTML = '';
 
@@ -1379,14 +633,52 @@ function openEditModal(id) {
         colorContainer.appendChild(dot);
     });
 
-    // Render Pixel Pickers
+    // GIF-URL-Eingabefeld bei Bedarf hinzufügen.
+    let gifUrlContainer = document.getElementById('gifUrlContainer');
+
+    if (!gifUrlContainer) {
+        gifUrlContainer = document.createElement('div');
+        gifUrlContainer.id = 'gifUrlContainer';
+        gifUrlContainer.className = 'mb-4';
+
+        gifUrlContainer.innerHTML = `
+            <label for="gifUrlInput"
+                class="block text-sm font-bold mb-2">
+                Eigenes GIF als Zählersymbol (URL)
+            </label>
+
+            <input
+                id="gifUrlInput"
+                type="url"
+                placeholder="https://example.com/animation.gif"
+                class="w-full rounded-xl bg-white/5 border border-white/10
+                    p-3 text-white"
+            >
+
+            <p class="text-xs text-neutral-400 mt-2">
+                Füge einen direkten Link zu einem GIF oder Bild ein.
+                Leeres Feld verwendet wieder das Pixel-Art-Symbol.
+            </p>
+        `;
+
+        const pixelContainer =
+            document.getElementById('pixelPickerList');
+
+        pixelContainer.parentElement.insertBefore(
+            gifUrlContainer,
+            pixelContainer
+        );
+    }
+
+    document.getElementById('gifUrlInput').value = c.gifUrl || '';
+
+    // Classic-Symbole anzeigen.
     const pixelContainer = document.getElementById('pixelPickerList');
     pixelContainer.innerHTML = '';
 
-    const themeMatrices =
-        PIXEL_MATRICES[currentTheme] || PIXEL_MATRICES.classic;
+    const classicMatrices = PIXEL_MATRICES.classic || [];
 
-    themeMatrices.forEach((_, idx) => {
+    classicMatrices.forEach((_, idx) => {
         const btn = document.createElement('button');
 
         btn.className =
@@ -1399,7 +691,7 @@ function openEditModal(id) {
         btn.innerHTML = getCounterPixelSVG(idx, selectedColor, 36);
 
         btn.title =
-            PIXEL_ART_DATA?.themes?.[currentTheme]?.[idx]?.name ||
+            PIXEL_ART_DATA?.themes?.classic?.[idx]?.name ||
             `Pixel-Art ${idx + 1}`;
 
         btn.setAttribute("aria-label", btn.title);
@@ -1438,6 +730,14 @@ function saveEditModal() {
     const newTrigger =
         document.getElementById('editTriggerSelect').value;
 
+    const gifUrlInput = document.getElementById('gifUrlInput');
+    const gifUrl = gifUrlInput ? gifUrlInput.value.trim() : '';
+
+    if (gifUrl && !/^https?:\/\/\S+$/i.test(gifUrl)) {
+        alert('Bitte gib eine gültige HTTP- oder HTTPS-URL ein.');
+        return;
+    }
+
     if (newName) {
         counters[editingId].name = newName;
     }
@@ -1450,6 +750,7 @@ function saveEditModal() {
     counters[editingId].color = selectedColor;
     counters[editingId].pixelIdx = selectedPixelIdx;
     counters[editingId].lastResetTimestamp = Date.now();
+    counters[editingId].gifUrl = gifUrl;
 
     saveData();
     closeEditModal();
@@ -1489,17 +790,6 @@ function resetCounter(id) {
     }
 }
 
-function changeTheme(themeKey) {
-    if (PIXEL_MATRICES[themeKey]) {
-        currentTheme = themeKey;
-
-        stats.themeChanges = (stats.themeChanges || 0) + 1;
-
-        saveData();
-        renderUI();
-    }
-}
-
 function applyPrimaryColor() {
     document.getElementById('btnNewCounter').style.backgroundColor =
         primaryColor;
@@ -1507,7 +797,7 @@ function applyPrimaryColor() {
     document.getElementById('btnSaveEdit').style.backgroundColor =
         primaryColor;
 
-    // Primary Color Picker in Settings
+    // Farbauswahl für die App-Primärfarbe.
     const container = document.getElementById('primaryColorPicker');
 
     if (container) {
@@ -1690,21 +980,31 @@ function toggleSoundSetting(val) {
 }
 
 function wipeAllData() {
-    if (confirm('Wirklich ALLE Zähler und Statistiken löschen?')) {
-        counters = {};
+    if (!confirm('Wirklich ALLE Zähler und Statistiken löschen?')) return;
 
-        stats = {
-            totalClicks: 0,
-            pageLoads: 0,
-            createdCounters: 0,
-            deletedCounters: 0,
-            themeChanges: 0,
-            autoTriggersExecuted: 0
-        };
+    // Lokale Daten und alte Cookie-Speicherungen entfernen.
+    const storageKeys = [
+        'ce_counters',
+        'ce_active_id',
+        'ce_primary_color',
+        'ce_darkmode',
+        'ce_stats',
+        'ce_particles',
+        'ce_sound',
+        'ce_theme'
+    ];
 
-        loadPixelArt().finally(() => initApp());
-        closeSettingsModal();
-    }
+    storageKeys.forEach(key => {
+        try {
+            localStorage.removeItem(key);
+        } catch (e) {}
+
+        try {
+            document.cookie = `${key}=; Max-Age=0; path=/; SameSite=Lax`;
+        } catch (e) {}
+    });
+
+    window.location.reload();
 }
 
 function setupKeyboardShortcuts() {
@@ -1736,6 +1036,30 @@ function escapeHtml(str) {
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
+}
+
+function getCounterSymbol(counter, size = 32) {
+    if (counter.gifUrl) {
+        const url = counter.gifUrl.trim();
+
+        if (/^https?:\/\/\S+$/i.test(url)) {
+            return `<img
+                src="${escapeHtml(url)}"
+                alt="Zählersymbol"
+                width="${size}"
+                height="${size}"
+                style="object-fit:contain; image-rendering:auto;"
+                referrerpolicy="no-referrer"
+                onerror="this.style.display='none'"
+            >`;
+        }
+    }
+
+    return getCounterPixelSVG(
+        counter.pixelIdx || 0,
+        counter.color || primaryColor,
+        size
+    );
 }
 
 loadPixelArt().finally(() => initApp());
