@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-pixel { font-family: 'Press Start 2P', monospace; }
+        .font-mono-num { font-family: 'JetBrains Mono', monospace; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes springPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+        .animate-spring { animation: springPop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.2); }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 0.6s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -60px) scale(1.4); }
+        }
+
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-dot:hover { transform: scale(1.15); }
+        .color-dot.selected { border-color: #ffffff; transform: scale(1.2); }
+        svg { shape-rendering: crispEdges; }
+        .font-pixel { line-height: 1.6; text-rendering: geometricPrecision; }
+        #mainBox { border-radius: 1rem; }
+        #countersGrid > div { border-radius: .75rem !important; }
+        .pixel-panel {
+            image-rendering: pixelated;
+            background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+        #singleView { background-image: radial-gradient(ellipse at center, rgba(59,130,246,.07), transparent 60%); }
+
+/* Pixel-art rendering */
+svg { shape-rendering: crispEdges; }
+#activeCounterPixel svg { image-rendering: pixelated; }
+#pixelPickerList button { min-width: 58px; min-height: 58px; border: 1px solid rgba(255,255,255,.08); }
+#pixelPickerList button:hover { border-color: rgba(255,255,255,.35); }
+.pixel-panel {
+    image-rendering: pixelated;
+    background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        radial-gradient(ellipse at center, rgba(59,130,246,.10), transparent 62%);
+    background-size: 16px 16px, 16px 16px, auto;
+}
+#mainBox { border-radius: 1rem; }
+#countersGrid > div { border-radius: .75rem !important; }
