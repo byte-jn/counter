@@ -113,52 +113,51 @@
         }
     </style>
 </head>
-<body class="h-full flex flex-col justify-between items-center p-4 sm:p-6 select-none overflow-hidden relative">
+<body class="h-screen w-screen p-4 sm:p-6 md:p-8 select-none overflow-hidden relative box-border bg-dark-bg">
 
-    <!-- Top Right 'i' Info/Config Button -->
-    <header class="w-full max-w-lg flex justify-end items-center pt-2 px-2 z-10">
-        <button 
-            id="openConfigBtn" 
-            class="w-10 h-10 rounded-full flex items-center justify-center text-dark-muted hover:text-white bg-dark-card hover:bg-dark-hover border border-dark-border transition-all duration-200 shadow-sm"
-            title="Counter Settings (i)"
-            aria-label="Counter Settings"
-        >
-            <i class="fa-solid fa-info text-sm"></i>
-        </button>
-    </header>
-
-    <!-- Main Tap / Increment Screen Area -->
+    <!-- Equal Margin Main Counter Card Container -->
     <main 
         id="tapArea"
-        class="w-full max-w-lg flex-1 my-4 bg-dark-bg hover:bg-dark-card/40 border border-dark-border rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-150 shadow-2xl relative overflow-hidden group"
+        class="w-full h-full bg-dark-bg hover:bg-dark-card/40 border border-dark-border rounded-3xl p-6 flex flex-col items-center justify-between cursor-pointer transition-all duration-150 shadow-2xl relative overflow-hidden group"
         role="button"
         tabindex="0"
         aria-label="Tap to increment counter"
     >
-        <!-- Counter Title -->
-        <h1 id="displayTitle" class="text-xl sm:text-2xl font-medium text-dark-muted mb-6 tracking-wide text-center px-4 transition-colors group-hover:text-neutral-300 truncate max-w-full">
-            Counter
-        </h1>
+        <!-- Top Right 'i' Info/Config Button inside the main card -->
+        <div class="w-full flex justify-between items-center z-10 pointer-events-none">
+            <span class="text-[11px] text-dark-muted/40 tracking-widest uppercase font-medium">
+                Tap anywhere to count
+            </span>
+            <button 
+                id="openConfigBtn" 
+                class="pointer-events-auto w-10 h-10 rounded-full flex items-center justify-center text-dark-muted hover:text-white bg-dark-card hover:bg-dark-hover border border-dark-border transition-all duration-200 shadow-sm"
+                title="Counter Settings (i)"
+                aria-label="Counter Settings"
+            >
+                <i class="fa-solid fa-info text-sm"></i>
+            </button>
+        </div>
 
-        <!-- Counter Large Display -->
-        <div class="my-auto flex flex-col items-center justify-center pointer-events-none">
-            <span id="counterValue" class="text-8xl sm:text-9xl font-bold tracking-tight text-white font-mono transition-transform">
+        <!-- Center Counter Display -->
+        <div class="my-auto flex flex-col items-center justify-center pointer-events-none text-center">
+            <!-- Counter Title -->
+            <h1 id="displayTitle" class="text-xl sm:text-2xl font-medium text-dark-muted mb-4 tracking-wide text-center px-4 transition-colors group-hover:text-neutral-300 truncate max-w-full">
+                Counter
+            </h1>
+            
+            <span id="counterValue" class="text-8xl sm:text-9xl md:text-[10rem] font-bold tracking-tight text-white font-mono transition-transform">
                 0
             </span>
-            <div class="mt-8 text-dark-muted text-3xl font-light opacity-30 group-hover:opacity-75 transition-opacity">
+            <div class="mt-6 text-dark-muted text-3xl font-light opacity-30 group-hover:opacity-75 transition-opacity">
                 <i class="fa-solid fa-plus"></i>
             </div>
         </div>
 
-        <div class="text-[11px] text-dark-muted/60 tracking-widest uppercase mt-auto font-medium">
-            Tap anywhere to count
+        <!-- Bottom Guidance inside card -->
+        <div class="text-xs text-dark-muted/70 text-center pointer-events-none">
+            Press <kbd class="px-1.5 py-0.5 bg-dark-card border border-dark-border rounded text-neutral-300 font-mono text-[10px]">Space</kbd> or <kbd class="px-1.5 py-0.5 bg-dark-card border border-dark-border rounded text-neutral-300 font-mono text-[10px]">Enter</kbd> to count
         </div>
     </main>
-
-    <!-- Bottom Guidance -->
-    <footer class="text-xs text-dark-muted py-2 text-center">
-        Press <kbd class="px-1.5 py-0.5 bg-dark-card border border-dark-border rounded text-neutral-300 font-mono text-[10px]">Space</kbd> or <kbd class="px-1.5 py-0.5 bg-dark-card border border-dark-border rounded text-neutral-300 font-mono text-[10px]">Enter</kbd> to count
-    </footer>
 
     <!-- Quick Config / Multi-Counter Drawer Modal -->
     <div id="configModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-200">
