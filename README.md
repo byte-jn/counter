@@ -14,7 +14,7 @@ Ein eleganter, extrem minimalistischer Zähler (Single-Tap Counter) im Dark Mode
 - **Multi-Counter-Verwaltung**:
   - Erstelle beliebig viele verschiedene Zähler mit eigenen Namen.
   - Nahtloses Wechseln zwischen den Zählern über ein Auswahlmenü.
-- **Quick Config Modal (i-Button oben rechts)**:
+- **Settings and Edit**:
   - Zähler umbenennen.
   - Zählerstand direkt bearbeiten oder auf 0 zurücksetzen.
   - Zähler erstellen oder löschen.
